@@ -1,0 +1,124 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #fff;
+  font-size: 0.95rem;
+}
+
+.input,
+.select,
+.textarea {
+  padding: 0.8rem;
+  border: 1px solid #333;
+  border-radius: 8px;
+  background: #2a2a2a;
+  color: #fff;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border-color 0.3s ease;
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus {
+  outline: none;
+  border-color: #646cff;
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.submitBtn,
+.cancelBtn {
+  flex: 1;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.submitBtn {
+  background-color: #646cff;
+  color: white;
+}
+
+.submitBtn:hover {
+  background-color: #535bf2;
+  transform: translateY(-1px);
+}
+
+.cancelBtn {
+  background-color: #555;
+  color: white;
+}
+
+.cancelBtn:hover {
+  background-color: #666;
+}
+
+@media (max-width: 600px) {
+  .formRow {
+    grid-template-columns: 1fr;
+  }
+
+  .buttons {
+    flex-direction: column-reverse;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  .label {
+    color: #213547;
+  }
+
+  .input,
+  .select,
+  .textarea {
+    background: white;
+    border-color: #ddd;
+    color: #213547;
+  }
+
+  .input:focus,
+  .select:focus,
+  .textarea:focus {
+    border-color: #646cff;
+  }
+
+  .cancelBtn {
+    background-color: #e0e0e0;
+    color: #213547;
+  }
+
+  .cancelBtn:hover {
+    background-color: #d0d0d0;
+  }
+}

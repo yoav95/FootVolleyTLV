@@ -1,0 +1,137 @@
+.container {
+  width: 95%;
+  max-width: none;
+  margin: 0 auto;
+  padding: 2rem 3rem;
+  min-height: 100vh;
+}
+
+.backLink {
+  color: #646cff;
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 2rem;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.backLink:hover {
+  color: #535bf2;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  padding: 2rem 0 2rem 0;
+  border-bottom: 1px solid #333;
+}
+
+.title {
+  font-size: 3rem;
+  color: #fff;
+  margin-bottom: 0.5rem;
+  margin-top: 0;
+}
+
+.city {
+  color: #646cff;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.description {
+  color: #aaa;
+  font-size: 1rem;
+}
+
+.actions {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.organizeBtn {
+  background-color: #646cff;
+  color: white;
+  border: none;
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.organizeBtn:hover {
+  background-color: #535bf2;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(100, 108, 255, 0.4);
+}
+
+.formContainer {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.formContainer h2 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: #fff;
+}
+
+.gamesSection {
+  margin-top: 3rem;
+}
+
+.sectionTitle {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: #fff;
+}
+
+.gamesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 2rem;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 3rem;
+  color: #888;
+}
+
+.emptyState p {
+  margin: 0.5rem 0;
+  font-size: 1.1rem;
+}
+
+@media (prefers-color-scheme: light) {
+  .header {
+    border-bottom-color: #ddd;
+  }
+
+  .title {
+    color: #213547;
+  }
+
+  .description {
+    color: #666;
+  }
+
+  .formContainer {
+    background: #f9f9f9;
+    border-color: #ddd;
+  }
+
+  .formContainer h2 {
+    color: #213547;
+  }
+
+  .sectionTitle {
+    color: #213547;
+  }
+}

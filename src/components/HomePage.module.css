@@ -1,0 +1,98 @@
+.container {
+  width: 95%;
+  max-width: none;
+  margin: 0 auto;
+  padding: 3rem 3rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 4rem;
+  padding-top: 2rem;
+}
+
+.title {
+  font-size: 3.5rem;
+  color: #646cff;
+  margin-bottom: 0.8rem;
+  margin-top: 0;
+}
+
+.subtitle {
+  font-size: 1.3rem;
+  color: #888;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.locationsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+  max-width: 100%;
+}
+
+.locationCard {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.locationCard:hover {
+  transform: translateY(-4px);
+  border-color: #646cff;
+  box-shadow: 0 4px 20px rgba(100, 108, 255, 0.3);
+}
+
+.locationName {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #fff;
+}
+
+.locationCity {
+  color: #646cff;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.locationDescription {
+  color: #aaa;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.viewGames {
+  color: #646cff;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+@media (prefers-color-scheme: light) {
+  .locationCard {
+    background: #f9f9f9;
+    border-color: #ddd;
+  }
+
+  .locationCard:hover {
+    box-shadow: 0 4px 20px rgba(100, 108, 255, 0.2);
+  }
+
+  .locationName {
+    color: #213547;
+  }
+
+  .locationDescription {
+    color: #666;
+  }
+}
