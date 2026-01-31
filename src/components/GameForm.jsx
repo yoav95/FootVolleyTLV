@@ -8,8 +8,12 @@ function GameForm({ onSubmit, onCancel }) {
     organizer: '',
     playersNeeded: 4,
     level: 'Intermediate',
-    notes: ''
+    notes: '',
+    meetingPointImage: null,
+    meetingPointText: ''
   });
+
+  const [imagePreview, setImagePreview] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -17,6 +21,21 @@ function GameForm({ onSubmit, onCancel }) {
       ...prev,
       [name]: value
     }));
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData(prev => ({
+          ...prev,
+          meetingPointImage: reader.result
+        }));
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSubmit = (e) => {
@@ -28,15 +47,18 @@ function GameForm({ onSubmit, onCancel }) {
       organizer: '',
       playersNeeded: 4,
       level: 'Intermediate',
-      notes: ''
+      notes: '',
+      meetingPointImage: null,
+      meetingPointText: ''
     });
+    setImagePreview(null);
   };
 
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
       <div className={styles.formRow}>
         <div className={styles.formGroup}>
-          <label htmlFor="date" className={styles.label}>Date *</label>
+          <label htmlFor="date" className={styles.label}>תאריך *</label>
           <input
             type="date"
             id="date"
@@ -50,7 +72,7 @@ function GameForm({ onSubmit, onCancel }) {
         </div>
 
         <div className={styles.formGroup}>
-          <label htmlFor="time" className={styles.label}>Time *</label>
+          <label htmlFor="time" className={styles.label}>שעה *</label>
           <input
             type="time"
             id="time"
@@ -64,7 +86,7 @@ function GameForm({ onSubmit, onCancel }) {
       </div>
 
       <div className={styles.formGroup}>
-        <label htmlFor="organizer" className={styles.label}>Your Name *</label>
+        <label htmlFor="organizer" className={styles.label}>שמך *</label>
         <input
           type="text"
           id="organizer"
@@ -73,13 +95,13 @@ function GameForm({ onSubmit, onCancel }) {
           onChange={handleChange}
           required
           className={styles.input}
-          placeholder="Enter your name"
+          placeholder="הכנס את שמך"
         />
       </div>
 
       <div className={styles.formRow}>
         <div className={styles.formGroup}>
-          <label htmlFor="playersNeeded" className={styles.label}>Players Needed *</label>
+          <label htmlFor="playersNeeded" className={styles.label}>מספר שחקנים דרוש *</label>
           <select
             id="playersNeeded"
             name="playersNeeded"
@@ -97,7 +119,7 @@ function GameForm({ onSubmit, onCancel }) {
         </div>
 
         <div className={styles.formGroup}>
-          <label htmlFor="level" className={styles.label}>Level *</label>
+          <label htmlFor="level" className={styles.label}>רמה *</label>
           <select
             id="level"
             name="level"
@@ -106,33 +128,64 @@ function GameForm({ onSubmit, onCancel }) {
             required
             className={styles.select}
           >
-            <option value="Beginner">Beginner</option>
-            <option value="Intermediate">Intermediate</option>
-            <option value="Advanced">Advanced</option>
-            <option value="All Levels">All Levels</option>
+            <option value="Beginner">מתחילים</option>
+            <option value="Intermediate">ביניים</option>
+            <option value="Advanced">מתקדמים</option>
+            <option value="All Levels">לכל הרמות</option>
           </select>
         </div>
       </div>
 
       <div className={styles.formGroup}>
-        <label htmlFor="notes" className={styles.label}>Notes</label>
+        <label htmlFor="notes" className={styles.label}>הערות</label>
         <textarea
           id="notes"
           name="notes"
           value={formData.notes}
           onChange={handleChange}
           className={styles.textarea}
-          placeholder="Any additional information..."
+          placeholder="כל מידע נוסף..."
           rows="3"
+        />
+      </div>
+
+      <div className={styles.formGroup}>
+        <label className={styles.label}>תמונת נקודת המפגש</label>
+        <label htmlFor="meetingPointImage" className={styles.fileInputLabel}>
+          📸 בחר תמונה
+        </label>
+        <input
+          type="file"
+          id="meetingPointImage"
+          name="meetingPointImage"
+          accept="image/*"
+          onChange={handleImageChange}
+          className={styles.fileInput}
+        />
+        {imagePreview && (
+          <img src={imagePreview} alt="תצוגה מקדימה" className={styles.imagePreview} />
+        )}
+      </div>
+
+      <div className={styles.formGroup}>
+        <label htmlFor="meetingPointText" className={styles.label}>תיאור נקודת המפגש</label>
+        <input
+          type="text"
+          id="meetingPointText"
+          name="meetingPointText"
+          value={formData.meetingPointText}
+          onChange={handleChange}
+          className={styles.input}
+          placeholder="למשל: 'ליד הרשתות כדורעף', 'ליד מגדל המציל'"
         />
       </div>
 
       <div className={styles.buttons}>
         <button type="submit" className={styles.submitBtn}>
-          Create Game
+          יצירת משחק
         </button>
         <button type="button" onClick={onCancel} className={styles.cancelBtn}>
-          Cancel
+          ביטול
         </button>
       </div>
     </form>

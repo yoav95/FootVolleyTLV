@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomePage from './components/HomePage';
-import LocationPage from './components/LocationPage';
+import GameCreationPage from './components/GameCreationPage';
+import GameDetailsPage from './components/GameDetailsPage';
 import styles from './App.module.css';
 
 function App() {
@@ -9,7 +10,8 @@ function App() {
       <div className={styles.app}>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/location/:locationId" element={<LocationPage />} />
+          <Route path="/create-game" element={<GameCreationPage />} />
+          <Route path="/game/:gameId" element={<GameDetailsPage />} />
         </Routes>
       </div>
     </Router>

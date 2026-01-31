@@ -1,0 +1,98 @@
+[
+  {
+    "id": "1",
+    "coordinates": {
+      "lat": 32.0853,
+      "lng": 34.7692
+    },
+    "date": "2026-02-05",
+    "time": "17:00",
+    "organizer": "David Cohen",
+    "playersNeeded": 4,
+    "currentPlayers": 2,
+    "level": "Intermediate",
+    "notes": "Bring your own ball!",
+    "meetingPointImage": null,
+    "meetingPointText": "Near the volleyball nets"
+  },
+  {
+    "id": "2",
+    "coordinates": {
+      "lat": 32.0809,
+      "lng": 34.7697
+    },
+    "date": "2026-02-06",
+    "time": "18:00",
+    "organizer": "Sarah Levy",
+    "playersNeeded": 6,
+    "currentPlayers": 4,
+    "level": "Advanced",
+    "notes": "Competitive game, experienced players only",
+    "meetingPointImage": null,
+    "meetingPointText": "By the lifeguard stand"
+  },
+  {
+    "id": "3",
+    "coordinates": {
+      "lat": 32.0750,
+      "lng": 34.7715
+    },
+    "date": "2026-02-07",
+    "time": "16:30",
+    "organizer": "Michael Ben-David",
+    "playersNeeded": 4,
+    "currentPlayers": 1,
+    "level": "Beginner",
+    "notes": "Beginners welcome! We'll teach you the basics",
+    "meetingPointImage": null,
+    "meetingPointText": "At the main entrance"
+  },
+  {
+    "id": "4",
+    "coordinates": {
+      "lat": 32.0900,
+      "lng": 34.7650
+    },
+    "date": "2026-02-08",
+    "time": "17:00",
+    "organizer": "Rachel Mizrahi",
+    "playersNeeded": 4,
+    "currentPlayers": 3,
+    "level": "Intermediate",
+    "notes": "Sunset game session",
+    "meetingPointImage": null,
+    "meetingPointText": "Near the palm trees"
+  },
+  {
+    "id": "5",
+    "coordinates": {
+      "lat": 32.0820,
+      "lng": 34.7680
+    },
+    "date": "2026-02-09",
+    "time": "10:00",
+    "organizer": "Yoni Goldberg",
+    "playersNeeded": 6,
+    "currentPlayers": 2,
+    "level": "All Levels",
+    "notes": "Morning game, coffee after!",
+    "meetingPointImage": null,
+    "meetingPointText": "North beach section"
+  },
+  {
+    "id": "6",
+    "coordinates": {
+      "lat": 32.0870,
+      "lng": 34.7705
+    },
+    "date": "2026-02-10",
+    "time": "19:00",
+    "organizer": "Noa Shafir",
+    "playersNeeded": 4,
+    "currentPlayers": 3,
+    "level": "Beginner",
+    "notes": "Fun casual game, all welcome",
+    "meetingPointImage": null,
+    "meetingPointText": "South beach area"
+  }
+]
