@@ -211,7 +211,7 @@ function GameDetailsPage() {
       <div className={styles.gameCard}>
         <header className={styles.header}>
           <h1 className={styles.title}>
-            משחק של {organizerProfile?.name || 'מארגן'}
+            {game.title || `משחק של ${organizerProfile?.name || 'מארגן'}`}
           </h1>
           <span className={`${styles.level} ${styles[`level-${game.level}`.toLowerCase()]}`}>
             רמה {game.level}

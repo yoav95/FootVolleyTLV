@@ -7,6 +7,7 @@ import styles from './GameForm.module.css';
 function GameForm({ location, onSuccess, onCancel }) {
   const { currentUser } = useContext(AuthContext);
   const [formData, setFormData] = useState({
+    title: '',
     date: '',
     time: '',
     playersNeeded: 4,
@@ -92,6 +93,7 @@ function GameForm({ location, onSuccess, onCancel }) {
 
       await createGame(gameData, currentUser.uid);
       setFormData({
+        title: '',
         date: '',
         time: '',
         playersNeeded: 4,
@@ -135,6 +137,22 @@ function GameForm({ location, onSuccess, onCancel }) {
         </div>
       ) : (
         <>
+      <div className={styles.formGroup}>
+        <label htmlFor="title" className={styles.label}>כותרת המשחק *</label>
+        <input
+          type="text"
+          id="title"
+          name="title"
+          value={formData.title}
+          onChange={handleChange}
+          required
+          className={styles.input}
+          placeholder="לדוגמה: משחק חופים, משחק ערב, וכו'"
+          disabled={loading}
+          maxLength="50"
+        />
+      </div>
+
       <div className={styles.formRow}>
         <div className={styles.formGroup}>
           <label htmlFor="date" className={styles.label}>תאריך *</label>

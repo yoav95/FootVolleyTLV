@@ -38,18 +38,18 @@ function MapClickHandler({ setSelectedLocation, setShowDialog, setPopupPosition 
 
 // Function to get color based on level
 function getLevelColor(level) {
-  const levelMap = {
-    'מתחילים': '#4ade80',
-    'ביניים': '#fbbf24',
-    'מתקדמים': '#ef4444',
-    'לכל הרמות': '#8b5cf6',
-    // English fallbacks
-    'Beginner': '#4ade80',
-    'Intermediate': '#fbbf24',
-    'Advanced': '#ef4444',
-    'All Levels': '#8b5cf6'
+  // Handle numeric levels (1-5)
+  const numericLevel = parseInt(level);
+  const colorMap = {
+    1: '#4ade80',  // מתחיל - green
+    2: '#fbbf24',  // בינוני - yellow
+    3: '#ef4444',  // מתקדם - red
+    4: '#f97316',  // מתקדם מאוד - orange
+    5: '#8b5cf6'   // מומחה - purple
   };
-  return levelMap[level] || '#00b4d8';
+  
+  // Return color for numeric level, or default blue
+  return colorMap[numericLevel] || '#00b4d8';
 }
 
 // Game Marker Component with soccer ball icon
@@ -123,10 +123,14 @@ function GameMarker({ game, navigate }) {
       <Popup className={styles.customPopup}>
         <div className={styles.popupContentWrapper} onClick={() => navigate(`/game/${game.id}`)}>
           <div className={styles.popupHeader}>
-            <span className={styles.popupOrganizer}>משחק של {game.organizer}</span>
-            <span className={styles.popupLevel} style={{ backgroundColor: color }}>{game.level}</span>
+            <span className={styles.popupOrganizer}>{game.title || 'משחק'}</span>
+            <span className={styles.popupLevel} style={{ backgroundColor: color }}>רמה {game.level}</span>
           </div>
           <div className={styles.popupDetails}>
+              <div className={styles.popupDetailItem}>
+                <span className={styles.popupIcon}>👤</span>
+                <span>מארגן: {game.organizer}</span>
+              </div>
               <div className={styles.popupDetailItem}>
                 <span className={styles.popupIcon}>📅</span>
                 <span>{game.date}</span>
@@ -165,7 +169,28 @@ function HomePage() {
       try {
         setLoadingGames(true);
         const allGames = await getAllGames();
-        setGamesList(allGames);
+        
+        // Fetch organizer names for all games
+        const { getUserProfile } = await import('../firebase/authService');
+        const gamesWithOrganizers = await Promise.all(
+          allGames.map(async (game) => {
+            try {
+              const organizerProfile = await getUserProfile(game.organizerId);
+              return {
+                ...game,
+                organizer: organizerProfile?.name || 'מארגן'
+              };
+            } catch (err) {
+              console.error(`Error fetching organizer for game ${game.id}:`, err);
+              return {
+                ...game,
+                organizer: 'מארגן'
+              };
+            }
+          })
+        );
+        
+        setGamesList(gamesWithOrganizers);
       } catch (err) {
         console.error('Error fetching games:', err);
       } finally {
