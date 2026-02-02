@@ -187,3 +187,155 @@
     color: #213547;
   }
 }
+@media (max-width: 768px) {
+  .card {
+    padding: 1.25rem;
+    border-radius: 10px;
+  }
+
+  .header {
+    margin-bottom: 0.9rem;
+    padding-bottom: 0.9rem;
+    gap: 0.75rem;
+  }
+
+  .date {
+    padding: 0.4rem 0.9rem;
+    min-width: 55px;
+    border-radius: 6px;
+  }
+
+  .dateDay {
+    font-size: 1.5rem;
+  }
+
+  .dateMonth {
+    font-size: 0.8rem;
+    margin-top: 0.15rem;
+  }
+
+  .time {
+    font-size: 0.95rem;
+  }
+
+  .info {
+    gap: 0.75rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .infoRow {
+    gap: 0.5rem;
+    font-size: 0.95rem;
+  }
+
+  .levelBadge {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.85rem;
+    border-radius: 6px;
+  }
+
+  .organizer {
+    font-size: 0.95rem;
+  }
+
+  .playersInfo {
+    font-size: 0.95rem;
+  }
+
+  .notes {
+    padding: 0.8rem;
+    margin-bottom: 0.9rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+  }
+
+  .joinBtn {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.9rem;
+    border-radius: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 1rem;
+    border-radius: 8px;
+    border-width: 1px;
+  }
+
+  .card:hover {
+    transform: none;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+    gap: 0.5rem;
+  }
+
+  .date {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0.8rem;
+    min-width: auto;
+    width: 100%;
+    border-radius: 6px;
+  }
+
+  .dateDay {
+    font-size: 1.3rem;
+  }
+
+  .dateMonth {
+    font-size: 0.75rem;
+    margin-top: 0;
+    margin-left: 0.5rem;
+  }
+
+  .time {
+    font-size: 0.9rem;
+  }
+
+  .info {
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .infoRow {
+    gap: 0.4rem;
+    font-size: 0.9rem;
+    flex-wrap: wrap;
+  }
+
+  .levelBadge {
+    padding: 0.3rem 0.65rem;
+    font-size: 0.8rem;
+    border-radius: 5px;
+  }
+
+  .organizer {
+    font-size: 0.9rem;
+  }
+
+  .playersInfo {
+    font-size: 0.9rem;
+  }
+
+  .notes {
+    padding: 0.7rem;
+    margin-bottom: 0.75rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .joinBtn {
+    padding: 0.7rem 1.25rem;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    width: 100%;
+  }
+}

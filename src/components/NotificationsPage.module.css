@@ -1,0 +1,420 @@
+.container {
+  width: 100%;
+  min-height: 100vh;
+  padding: 2rem;
+  background: linear-gradient(135deg, #fef6e4 0%, #fff8e7 50%, #ffe8d6 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  color: #00b4d8;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  width: fit-content;
+  background: rgba(0, 180, 216, 0.1);
+  border-radius: 25px;
+  font-weight: 600;
+  border: 2px solid rgba(0, 180, 216, 0.3);
+}
+
+.backLink:hover {
+  color: #0096c7;
+  background: rgba(0, 180, 216, 0.2);
+  transform: translateX(-5px);
+}
+
+.card {
+  background: linear-gradient(135deg, #ffffff 0%, #fff8e7 100%);
+  border: 3px solid #ffd166;
+  border-radius: 25px;
+  padding: 2.5rem;
+  box-shadow: 0 8px 32px rgba(255, 167, 38, 0.3), 0 0 0 1px rgba(0, 180, 216, 0.2);
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid rgba(255, 209, 102, 0.3);
+}
+
+.title {
+  font-size: 2rem;
+  color: #023047;
+  margin: 0 0 0.5rem 0;
+  font-weight: 700;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: #666;
+  margin: 0;
+  font-weight: 500;
+}
+
+.error {
+  background: #ffe0e0;
+  color: #d32f2f;
+  padding: 1rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid #d32f2f;
+}
+
+.loadingMessage {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: rgba(255, 209, 102, 0.1);
+  border-radius: 15px;
+  border: 2px dashed rgba(255, 209, 102, 0.3);
+}
+
+.emptyIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.emptyText {
+  color: #666;
+  font-size: 1.1rem;
+  margin: 0;
+  font-weight: 500;
+}
+
+.requestsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.requestItem {
+  background: linear-gradient(135deg, #fff8e7 0%, #ffffff 100%);
+  border: 2px solid #ffd166;
+  border-radius: 15px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(255, 209, 102, 0.2);
+}
+
+.requestItem:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(255, 209, 102, 0.3);
+  border-color: #ffb347;
+}
+
+.requestHeader {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 209, 102, 0.3);
+}
+
+.requestUserInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.requestUserName {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #023047;
+  font-weight: 700;
+}
+
+.requestUserPhone {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.requestGameInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: right;
+}
+
+.requestGameDate,
+.requestGameTime {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.requestActions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.approveBtn,
+.rejectBtn,
+.viewBtn {
+  padding: 0.7rem 1.5rem;
+  border: none;
+  border-radius: 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 90px;
+}
+
+.approveBtn {
+  background: linear-gradient(135deg, #06d6a0 0%, #00b894 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(6, 214, 160, 0.3);
+}
+
+.approveBtn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #00b894 0%, #00a383 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(6, 214, 160, 0.4);
+}
+
+.rejectBtn {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+}
+
+.rejectBtn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #ee5a6f 0%, #f06595 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+}
+
+.viewBtn {
+  background: linear-gradient(135deg, #00b4d8 0%, #0096c7 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(0, 180, 216, 0.3);
+}
+
+.viewBtn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #0096c7 0%, #0077b6 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 180, 216, 0.4);
+}
+
+.approveBtn:disabled,
+.rejectBtn:disabled,
+.viewBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .backBtn {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+  }
+
+  .card {
+    padding: 1.5rem;
+    border-radius: 15px;
+    border-width: 2px;
+  }
+
+  .title {
+    font-size: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .requestList {
+    gap: 1rem;
+  }
+
+  .requestItem {
+    padding: 1.2rem;
+    border-radius: 12px;
+    gap: 1rem;
+  }
+
+  .requestHeader {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .requesterInfo {
+    gap: 0.75rem;
+  }
+
+  .requesterName {
+    font-size: 1rem;
+  }
+
+  .requesterPhone {
+    font-size: 0.9rem;
+  }
+
+  .requesterLevel {
+    font-size: 0.9rem;
+  }
+
+  .requestGameInfo {
+    text-align: left;
+  }
+
+  .gameTime {
+    font-size: 0.95rem;
+  }
+
+  .gameLocation {
+    font-size: 0.95rem;
+  }
+
+  .gameLevel {
+    font-size: 0.95rem;
+  }
+
+  .requestActions {
+    justify-content: flex-start;
+    gap: 0.75rem;
+  }
+
+  .approveBtn,
+  .rejectBtn,
+  .viewBtn {
+    flex: 1;
+    min-width: 70px;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .emptyState {
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .emptyStateMessage {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0.75rem;
+  }
+
+  .backBtn {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    margin-bottom: 0.75rem;
+    border-radius: 20px;
+  }
+
+  .card {
+    padding: 1rem;
+    border-radius: 12px;
+    border-width: 1px;
+  }
+
+  .title {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+
+  .requestList {
+    gap: 0.75rem;
+  }
+
+  .requestItem {
+    padding: 0.9rem;
+    border-radius: 10px;
+    gap: 0.75rem;
+    flex-direction: column;
+  }
+
+  .requesterInfo {
+    gap: 0.5rem;
+  }
+
+  .requesterName {
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+
+  .requesterPhone {
+    font-size: 0.85rem;
+  }
+
+  .requesterLevel {
+    font-size: 0.85rem;
+  }
+
+  .requestHeader {
+    gap: 0.5rem;
+    flex-direction: column;
+  }
+
+  .requestGameInfo {
+    text-align: left;
+    gap: 0.4rem;
+  }
+
+  .gameTime {
+    font-size: 0.9rem;
+  }
+
+  .gameLocation {
+    font-size: 0.9rem;
+  }
+
+  .gameLevel {
+    font-size: 0.9rem;
+  }
+
+  .requestActions {
+    gap: 0.5rem;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .approveBtn,
+  .rejectBtn,
+  .viewBtn {
+    padding: 0.6rem 0.9rem;
+    font-size: 0.8rem;
+    min-width: 60px;
+    flex: 1;
+  }
+
+  .emptyState {
+    padding: 1.5rem;
+    text-align: center;
+  }
+
+  .emptyStateMessage {
+    font-size: 0.95rem;
+  }
+}

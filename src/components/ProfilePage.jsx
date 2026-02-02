@@ -11,7 +11,8 @@ function ProfilePage() {
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
-    level: '2'
+    level: '2',
+    phone: ''
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -32,7 +33,8 @@ function ProfilePage() {
           setProfile(userProfile);
           setFormData({
             name: userProfile.name || '',
-            level: userProfile.level?.toString() || '2'
+            level: userProfile.level?.toString() || '2',
+            phone: userProfile.phone || ''
           });
         }
       } catch (err) {
@@ -59,6 +61,10 @@ function ProfilePage() {
       setError('שם לא יכול להיות ריק');
       return;
     }
+    if (!formData.phone.trim()) {
+      setError('מספר טלפון לא יכול להיות ריק');
+      return;
+    }
 
     setSaving(true);
     setError('');
@@ -67,7 +73,8 @@ function ProfilePage() {
     try {
       await updateUserProfile(currentUser.uid, {
         name: formData.name,
-        level: parseInt(formData.level)
+        level: parseInt(formData.level),
+        phone: formData.phone
       });
       setProfile({
         ...profile,
@@ -98,7 +105,7 @@ function ProfilePage() {
     try {
       await logoutUser();
       navigate('/login');
-    } catch (err) {
+    } catch {
       setError('שגיאה בהתנתקות');
     }
   };
@@ -159,6 +166,20 @@ function ProfilePage() {
                 </select>
               </div>
 
+              <div className={styles.formGroup}>
+                <label htmlFor="phone" className={styles.label}>מספר טלפון *</label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  className={styles.input}
+                  placeholder="050-1234567"
+                  disabled={saving}
+                />
+              </div>
+
               <div className={styles.buttonGroup}>
                 <button
                   type="button"
@@ -199,6 +220,11 @@ function ProfilePage() {
                       return levelMap[profile?.level] || 'בינוני';
                     })()}
                   </span>
+                </div>
+
+                <div className={styles.infoItem}>
+                  <span className={styles.infoLabel}>טלפון:</span>
+                  <span className={styles.infoValue}>{profile?.phone || 'לא הוגדר'}</span>
                 </div>
 
                 <div className={styles.infoItem}>

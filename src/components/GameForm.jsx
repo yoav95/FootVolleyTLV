@@ -1,6 +1,7 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../App';
-import { createGame } from '../firebase/gameService';
+import { createGame, getUserActiveGame } from '../firebase/gameService';
+import { getUserProfile } from '../firebase/authService';
 import styles from './GameForm.module.css';
 
 function GameForm({ location, onSuccess, onCancel }) {
@@ -15,6 +16,40 @@ function GameForm({ location, onSuccess, onCancel }) {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [userProfile, setUserProfile] = useState(null);
+  const [activeGame, setActiveGame] = useState(null);
+  const [checkingGame, setCheckingGame] = useState(true);
+
+  useEffect(() => {
+    if (currentUser) {
+      const fetchProfile = async () => {
+        try {
+          const profile = await getUserProfile(currentUser.uid);
+          setUserProfile(profile);
+        } catch (err) {
+          console.error('Error fetching profile:', err);
+        }
+      };
+      fetchProfile();
+    }
+  }, [currentUser]);
+
+  useEffect(() => {
+    if (currentUser) {
+      const checkActiveGame = async () => {
+        try {
+          setCheckingGame(true);
+          const game = await getUserActiveGame(currentUser.uid);
+          setActiveGame(game);
+        } catch (err) {
+          console.error('Error checking active game:', err);
+        } finally {
+          setCheckingGame(false);
+        }
+      };
+      checkActiveGame();
+    }
+  }, [currentUser]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -32,6 +67,14 @@ function GameForm({ location, onSuccess, onCancel }) {
     }
     if (!location) {
       setError('בחר מיקום על המפה');
+      return;
+    }
+    if (!userProfile?.phone) {
+      setError('עליך להוסיף מספר טלפון לפני יצירת משחק. עדכן את הפרופיל שלך.');
+      return;
+    }
+    if (activeGame) {
+      setError('אתה כבר יצרת משחק. מחק אותו כדי ליצור משחק חדש.');
       return;
     }
 
@@ -66,6 +109,18 @@ function GameForm({ location, onSuccess, onCancel }) {
 
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
+      {checkingGame ? (
+        <div className={styles.loading}>בודק משחקים קיימים...</div>
+      ) : activeGame ? (
+        <div className={styles.activeGameMessage}>
+          <p>⚠️ אתה כבר יצרת משחק</p>
+          <p className={styles.activeGameDate}>
+            {activeGame.date} ב-{activeGame.time}
+          </p>
+          <p>מחק את המשחק הקיים כדי ליצור משחק חדש</p>
+        </div>
+      ) : (
+        <>
       <div className={styles.formRow}>
         <div className={styles.formGroup}>
           <label htmlFor="date" className={styles.label}>תאריך *</label>
@@ -168,13 +223,20 @@ function GameForm({ location, onSuccess, onCancel }) {
       {error && <div className={styles.error}>{error}</div>}
 
       <div className={styles.buttonGroup}>
-        <button type="submit" className={styles.submitBtn} disabled={loading}>
+        <button 
+          type="submit" 
+          className={styles.submitBtn} 
+          disabled={loading || !userProfile?.phone || activeGame || checkingGame}
+          title={activeGame ? 'אתה כבר יצרת משחק' : !userProfile?.phone ? 'עליך להוסיף מספר טלפון לפני יצירת משחק' : ''}
+        >
           {loading ? 'יוצר משחק...' : 'יצור משחק'}
         </button>
         <button type="button" onClick={onCancel} className={styles.cancelBtn} disabled={loading}>
           ביטול
         </button>
       </div>
+        </>
+      )}
     </form>
   );
 }

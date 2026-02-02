@@ -229,13 +229,14 @@
   font-size: 0.85rem;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   .container {
     padding: 1rem;
   }
 
   .loginCard {
     padding: 2rem;
+    border-radius: 20px;
   }
 
   .title {
@@ -244,5 +245,81 @@
 
   .subtitle {
     font-size: 1rem;
+  }
+
+  .form {
+    gap: 1.2rem;
+  }
+
+  .input {
+    padding: 0.8rem;
+    font-size: 1rem;
+  }
+
+  .button {
+    padding: 0.9rem;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0.75rem;
+  }
+
+  .loginCard {
+    padding: 1.5rem;
+    border-radius: 15px;
+    border-width: 2px;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+  }
+
+  .form {
+    gap: 1rem;
+  }
+
+  .formGroup {
+    gap: 0.4rem;
+  }
+
+  .label {
+    font-size: 0.9rem;
+  }
+
+  .input {
+    padding: 0.7rem;
+    font-size: 0.95rem;
+    border-radius: 8px;
+  }
+
+  .button {
+    padding: 0.8rem;
+    font-size: 0.95rem;
+    border-radius: 20px;
+  }
+
+  .divider {
+    margin: 0.75rem 0;
+    font-size: 0.9rem;
+  }
+
+  .demoInfo {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+  }
+
+  .demoTitle {
+    font-size: 0.85rem;
+  }
+
+  .demoText {
+    font-size: 0.8rem;
   }
 }

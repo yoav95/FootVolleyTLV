@@ -67,6 +67,49 @@
   font-size: 1.2rem;
 }
 
+.notificationBtn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.3rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+}
+
+.notificationBtn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(255, 107, 107, 0.6);
+}
+
+.notificationIcon {
+  font-size: 1.3rem;
+}
+
+.notificationBadge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #ffd700;
+  color: #333;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
 .header {
   text-align: center;
   margin-bottom: 0.5rem;
@@ -359,69 +402,45 @@
   }
 }
 
-/* Info Bar at bottom */
-.infoBar {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  gap: 1.5rem;
+/* Weather Widget - Bottom Right */
+.weatherWidget {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
   background: linear-gradient(135deg, rgba(255, 209, 102, 0.95) 0%, rgba(255, 167, 38, 0.95) 100%);
-  border-top: 3px solid #00b4d8;
-  padding: 1rem;
-  margin-top: 0;
-  border-radius: 0;
-  box-shadow: 0 -4px 20px rgba(255, 167, 38, 0.3);
-  flex-wrap: wrap;
+  border: 3px solid #ffd166;
+  border-radius: 20px;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 4px 20px rgba(255, 167, 38, 0.4);
   backdrop-filter: blur(10px);
+  z-index: 400;
 }
 
-.infoItem {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex: 1;
-  min-width: 200px;
-  padding: 0.75rem 1rem;
-  background: rgba(255, 255, 255, 0.4);
-  border-radius: 15px;
-  transition: all 0.3s ease;
-  cursor: default;
-  border: 2px solid rgba(255, 255, 255, 0.6);
-}
-
-.infoItem:hover {
-  background: rgba(255, 255, 255, 0.6);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.infoIcon {
-  font-size: 2rem;
-  display: flex;
-  align-items: center;
+.weatherIcon {
+  font-size: 2.5rem;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
-.infoContent {
+.weatherInfo {
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
 }
 
-.infoLabel {
-  font-size: 0.85rem;
+.weatherTemp {
+  font-size: 1.1rem;
+  font-weight: 700;
   color: #023047;
   margin: 0;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-weight: 600;
 }
 
-.infoValue {
-  font-size: 1.3rem;
-  color: #00b4d8;
+.weatherDesc {
+  font-size: 0.8rem;
+  color: #666;
   margin: 0;
-  font-weight: bold;
 }
 
 /* Custom Popup Styling - Beach Theme */
@@ -609,30 +628,23 @@
     width: 100%;
   }
 
-  .infoBar {
-    flex-direction: column;
-    gap: 0.8rem;
-    padding: 0.75rem;
-    margin-top: 0.5rem;
-    border-radius: 4px;
+  .weatherWidget {
+    bottom: 18px;
+    right: 18px;
+    padding: 0.85rem 1.2rem;
+    border-radius: 18px;
   }
 
-  .infoItem {
-    width: 100%;
-    justify-content: flex-start;
-    min-width: unset;
+  .weatherIcon {
+    font-size: 2.2rem;
   }
 
-  .infoIcon {
-    font-size: 1.5rem;
-  }
-
-  .infoLabel {
-    font-size: 0.75rem;
-  }
-
-  .infoValue {
+  .weatherTemp {
     font-size: 1rem;
+  }
+
+  .weatherDesc {
+    font-size: 0.8rem;
   }
 }
 
@@ -673,20 +685,21 @@
     padding: 0.6rem 1rem;
   }
 
-  .infoBar {
-    gap: 0.5rem;
-    padding: 0.5rem;
+  .weatherWidget {
+    bottom: 15px;
+    right: 15px;
+    padding: 0.75rem 1rem;
   }
 
-  .infoContent {
-    gap: 0.1rem;
+  .weatherIcon {
+    font-size: 2rem;
   }
 
-  .infoLabel {
-    font-size: 0.65rem;
+  .weatherTemp {
+    font-size: 1rem;
   }
 
-  .infoValue {
-    font-size: 0.9rem;
+  .weatherDesc {
+    font-size: 0.75rem;
   }
 }

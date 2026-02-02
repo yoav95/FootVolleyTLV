@@ -1,6 +1,7 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useContext } from 'react';
-import { getGameById, joinGame, leaveGame } from '../firebase/gameService';
+import { getGameById, requestToJoinGame, leaveGame, approveJoinRequest, rejectJoinRequest, deleteGame } from '../firebase/gameService';
+import { getUserProfile } from '../firebase/authService';
 import { AuthContext } from '../App';
 import styles from './GameDetailsPage.module.css';
 
@@ -13,6 +14,8 @@ function GameDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
+  const [userProfiles, setUserProfiles] = useState({});
+  const [organizerProfile, setOrganizerProfile] = useState(null);
 
   useEffect(() => {
     const fetchGame = async () => {
@@ -64,6 +67,41 @@ function GameDetailsPage() {
     }
   }, [game]);
 
+  // Fetch user profiles for players and pending requests
+  useEffect(() => {
+    const fetchUserProfiles = async () => {
+      if (!game) return;
+
+      const allUserIds = [
+        ...(game.players || []),
+        ...(game.pendingRequests || [])
+      ];
+
+      const profiles = {};
+      for (const userId of allUserIds) {
+        try {
+          const profile = await getUserProfile(userId);
+          profiles[userId] = profile;
+        } catch (err) {
+          console.error(`Error fetching profile for ${userId}:`, err);
+        }
+      }
+      setUserProfiles(profiles);
+
+      // Fetch organizer profile
+      if (game.organizerId) {
+        try {
+          const orgProfile = await getUserProfile(game.organizerId);
+          setOrganizerProfile(orgProfile);
+        } catch (err) {
+          console.error('Error fetching organizer profile:', err);
+        }
+      }
+    };
+
+    fetchUserProfiles();
+  }, [game]);
+
   if (loading) {
     return (
       <div className={styles.container}>
@@ -89,7 +127,7 @@ function GameDetailsPage() {
 
     setActionLoading(true);
     try {
-      await joinGame(gameId, currentUser.uid);
+      await requestToJoinGame(gameId, currentUser.uid);
       const updatedGame = await getGameById(gameId);
       setGame(updatedGame);
     } catch (err) {
@@ -116,8 +154,53 @@ function GameDetailsPage() {
     alert(`הצטרפת למשחק!`);
   };
 
+  const handleApproveRequest = async (userId) => {
+    if (!currentUser) return;
+
+    setActionLoading(true);
+    try {
+      await approveJoinRequest(gameId, userId, currentUser.uid);
+      const updatedGame = await getGameById(gameId);
+      setGame(updatedGame);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleRejectRequest = async (userId) => {
+    if (!currentUser) return;
+
+    setActionLoading(true);
+    try {
+      await rejectJoinRequest(gameId, userId, currentUser.uid);
+      const updatedGame = await getGameById(gameId);
+      setGame(updatedGame);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleDeleteGame = async () => {
+    if (!currentUser || !window.confirm('האם אתה בטוח שברצונך למחוק את המשחק?')) return;
+
+    setActionLoading(true);
+    try {
+      await deleteGame(gameId, currentUser.uid);
+      navigate('/');
+    } catch (err) {
+      setError(err.message);
+      setActionLoading(false);
+    }
+  };
+
   const isUserInGame = currentUser && game.players && game.players.includes(currentUser.uid);
   const isFull = game.players && game.players.length >= game.playersNeeded;
+  const isOrganizer = currentUser && game.organizerId === currentUser.uid;
+  const hasPendingRequest = currentUser && game.pendingRequests && game.pendingRequests.includes(currentUser.uid);
 
   return (
     <div className={styles.container}>
@@ -127,7 +210,9 @@ function GameDetailsPage() {
       
       <div className={styles.gameCard}>
         <header className={styles.header}>
-          <h1 className={styles.title}>משחק כדורעף</h1>
+          <h1 className={styles.title}>
+            משחק של {organizerProfile?.name || 'מארגן'}
+          </h1>
           <span className={`${styles.level} ${styles[`level-${game.level}`.toLowerCase()]}`}>
             רמה {game.level}
           </span>
@@ -158,9 +243,16 @@ function GameDetailsPage() {
                     {game.players.map((playerId, index) => (
                       <li key={index} className={styles.playerItem}>
                         <span className={styles.playerNumber}>{index + 1}.</span>
-                        <span className={styles.playerName}>{playerId === game.organizerId ? 'מארגן' : 'שחקן'}</span>
+                        <div className={styles.playerInfo}>
+                          <span className={styles.playerName}>
+                            {userProfiles[playerId]?.name || 'שחקן'}
+                          </span>
+                          {userProfiles[playerId]?.phone && (
+                            <span className={styles.playerPhone}>📱 {userProfiles[playerId].phone}</span>
+                          )}
+                        </div>
                         {playerId === game.organizerId && (
-                          <span className={styles.organizerBadge}>🔸</span>
+                          <span className={styles.organizerBadge}>🔸 מארגן</span>
                         )}
                       </li>
                     ))}
@@ -169,6 +261,38 @@ function GameDetailsPage() {
               )}
             </div>
           </div>
+
+          {/* Pending Requests Section - Only visible to organizer */}
+          {isOrganizer && game.pendingRequests && game.pendingRequests.length > 0 && (
+            <div className={styles.section}>
+              <h3 className={styles.sectionTitle}>⏳ בקשות ממתינות ({game.pendingRequests.length})</h3>
+              <div className={styles.pendingList}>
+                {game.pendingRequests.map((userId, index) => (
+                  <div key={index} className={styles.pendingItem}>
+                    <span className={styles.pendingName}>
+                      {userProfiles[userId]?.name || 'שחקן'}
+                    </span>
+                    <div className={styles.pendingActions}>
+                      <button
+                        onClick={() => handleApproveRequest(userId)}
+                        className={styles.approveBtn}
+                        disabled={actionLoading || isFull}
+                      >
+                        ✓ אשר
+                      </button>
+                      <button
+                        onClick={() => handleRejectRequest(userId)}
+                        className={styles.rejectBtn}
+                        disabled={actionLoading}
+                      >
+                        ✗ דחה
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className={styles.section}>
             <h3 className={styles.sectionTitle}>📍 מיקום</h3>
@@ -198,9 +322,13 @@ function GameDetailsPage() {
         </div>
 
         <div className={styles.actions}>
-          {!isUserInGame && !isFull ? (
+          {hasPendingRequest ? (
+            <button className={styles.pendingBtn} disabled>
+              ⏳ בקשה ממתינה לאישור המארגן
+            </button>
+          ) : !isUserInGame && !isFull ? (
             <button onClick={handleJoinGame} className={styles.joinBtn} disabled={actionLoading}>
-              {actionLoading ? 'מצטרף...' : 'הצטרפות למשחק'}
+              {actionLoading ? 'שולח בקשה...' : '📩 בקש להצטרף למשחק'}
             </button>
           ) : isUserInGame && !isFull ? (
             <button onClick={handleLeaveGame} className={styles.leaveBtn} disabled={actionLoading}>
@@ -209,6 +337,11 @@ function GameDetailsPage() {
           ) : (
             <button className={styles.fullBtn} disabled>
               המשחק מלא
+            </button>
+          )}
+          {isOrganizer && (
+            <button onClick={handleDeleteGame} className={styles.deleteBtn} disabled={actionLoading}>
+              {actionLoading ? 'מוחק...' : '🗑️ מחק משחק'}
             </button>
           )}
           <button onClick={() => navigate('/')} className={styles.cancelBtn} disabled={actionLoading}>

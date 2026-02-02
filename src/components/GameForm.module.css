@@ -9,6 +9,39 @@
   box-shadow: 0 8px 32px rgba(255, 167, 38, 0.3), 0 0 0 1px rgba(0, 180, 216, 0.2);
 }
 
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  font-weight: 600;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.activeGameMessage {
+  padding: 2rem;
+  background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+  border: 2px solid #ffc107;
+  border-radius: 15px;
+  text-align: center;
+  color: #856404;
+}
+
+.activeGameMessage p {
+  margin: 0.5rem 0;
+  font-weight: 600;
+}
+
+.activeGameDate {
+  font-size: 1.1rem;
+  color: #ff6b6b;
+  margin: 1rem 0;
+}
+
 .formRow {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -191,17 +224,87 @@
   }
 }
 
+@media (max-width: 768px) {
+  .form {
+    padding: 1.5rem;
+    border-radius: 15px;
+    gap: 1rem;
+  }
+
+  .formRow {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+
+  .formGroup {
+    gap: 0.4rem;
+  }
+
+  .label {
+    font-size: 0.95rem;
+  }
+
+  .input,
+  .select,
+  .textarea {
+    padding: 0.75rem;
+    font-size: 16px;
+    border-radius: 10px;
+  }
+
+  .textarea {
+    min-height: 80px;
+  }
+
+  .activeGameMessage {
+    padding: 1.5rem;
+    border-radius: 12px;
+  }
+
+  .activeGameDate {
+    font-size: 1rem;
+  }
+
+  .loading {
+    padding: 1.5rem;
+  }
+
+  .buttonGroup {
+    gap: 0.8rem;
+  }
+
+  .submitBtn,
+  .cancelBtn,
+  .deleteBtn {
+    padding: 0.85rem;
+    font-size: 0.95rem;
+  }
+
+  .error {
+    padding: 0.8rem;
+    font-size: 0.9rem;
+    border-radius: 8px;
+  }
+}
+
 @media (max-width: 480px) {
   .form {
+    padding: 1rem;
+    border-radius: 12px;
     gap: 0.8rem;
+    border-width: 2px;
   }
 
   .formRow {
     gap: 0.6rem;
   }
 
+  .formGroup {
+    gap: 0.3rem;
+  }
+
   .label {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
   }
 
   .input,
@@ -209,25 +312,52 @@
   .textarea {
     padding: 0.6rem;
     font-size: 16px;
+    border-radius: 8px;
   }
 
   .textarea {
     min-height: 60px;
   }
 
-  .fileInputLabel {
-    padding: 0.6rem;
-    font-size: 0.9rem;
+  .activeGameMessage {
+    padding: 1rem;
+    border-radius: 10px;
   }
 
-  .buttons {
-    gap: 0.6rem;
+  .activeGameMessage p {
+    margin: 0.3rem 0;
+    font-size: 0.95rem;
+  }
+
+  .activeGameDate {
+    font-size: 0.95rem;
+    margin: 0.5rem 0;
+  }
+
+  .loading {
+    padding: 1rem;
+    font-size: 0.95rem;
+  }
+
+  .buttonGroup {
+    gap: 0.5rem;
+    flex-direction: column-reverse;
   }
 
   .submitBtn,
-  .cancelBtn {
-    padding: 0.6rem;
+  .cancelBtn,
+  .deleteBtn {
+    padding: 0.7rem;
     font-size: 0.9rem;
+    border-radius: 15px;
+    width: 100%;
+  }
+
+  .error {
+    padding: 0.7rem;
+    font-size: 0.85rem;
+    border-radius: 8px;
+    border-left-width: 3px;
   }
 }
 

@@ -50,17 +50,31 @@ REACT_APP_FIREBASE_APP_ID=xxx
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Users collection - each user can read/write their own data
+    // Users collection - all authenticated users can read profiles, but only write their own
     match /users/{uid} {
-      allow read, write: if request.auth.uid == uid;
+      allow read: if request.auth != null;
+      allow write: if request.auth.uid == uid;
     }
     
-    // Games collection - everyone can read, authenticated users can create
-    match /games/{document=**} {
+    // Games collection
+    match /games/{gameId} {
       allow read: if request.auth != null;
       allow create: if request.auth != null;
-      allow update: if request.auth.uid == resource.data.organizerId;
       allow delete: if request.auth.uid == resource.data.organizerId;
+      
+      // Allow organizer to update everything
+      allow update: if request.auth.uid == resource.data.organizerId;
+      
+      // Allow users to add/remove themselves from players or pendingRequests arrays
+      allow update: if request.auth != null && 
+        (
+          // User can add/remove themselves from players
+          (request.resource.data.players.hasAny([request.auth.uid]) || 
+           !resource.data.players.hasAny([request.auth.uid])) ||
+          // User can add themselves to pendingRequests
+          (request.resource.data.pendingRequests.hasAny([request.auth.uid]) &&
+           !resource.data.pendingRequests.hasAny([request.auth.uid]))
+        );
     }
   }
 }

@@ -6,6 +6,7 @@ import GameCreationPage from './components/GameCreationPage';
 import GameDetailsPage from './components/GameDetailsPage';
 import LoginPage from './components/LoginPage';
 import ProfilePage from './components/ProfilePage';
+import NotificationsPage from './components/NotificationsPage';
 import styles from './App.module.css';
 
 export const AuthContext = createContext(null);
@@ -35,6 +36,7 @@ function App() {
           <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/notifications" element={<NotificationsPage />} />
             <Route path="/" element={<HomePage />} />
             <Route path="/create-game" element={<GameCreationPage />} />
             <Route path="/game/:gameId" element={<GameDetailsPage />} />

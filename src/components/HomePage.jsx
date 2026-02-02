@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MapContainer, TileLayer, GeoJSON, Marker, useMapEvent, useMap, CircleMarker, Popup } from 'react-leaflet';
 import { GiSoccerBall } from 'react-icons/gi';
-import { getAllGames } from '../firebase/gameService';
+import { getAllGames, getOrganizerPendingRequests } from '../firebase/gameService';
 import { AuthContext } from '../App';
 import styles from './HomePage.module.css';
 import 'leaflet/dist/leaflet.css';
@@ -55,8 +55,6 @@ function getLevelColor(level) {
 // Game Marker Component with soccer ball icon
 function GameMarker({ game, navigate }) {
   const color = getLevelColor(game.level);
-  const progressPercentage = (game.currentPlayers / game.playersNeeded) * 100;
-  const isFull = game.currentPlayers >= game.playersNeeded;
 
   // Create a unique popup key to force updates
   const popupKey = `${game.id}-${game.currentPlayers}`;
@@ -158,6 +156,7 @@ function HomePage() {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
+  const [pendingRequests, setPendingRequests] = useState([]);
   const { currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -176,6 +175,24 @@ function HomePage() {
 
     fetchGames();
   }, []);
+
+  useEffect(() => {
+    const fetchPendingRequests = async () => {
+      if (currentUser) {
+        try {
+          const requests = await getOrganizerPendingRequests(currentUser.uid);
+          setPendingRequests(requests);
+        } catch (err) {
+          console.error('Error fetching pending requests:', err);
+        }
+      }
+    };
+
+    fetchPendingRequests();
+    // Refresh requests every 30 seconds
+    const interval = setInterval(fetchPendingRequests, 30000);
+    return () => clearInterval(interval);
+  }, [currentUser]);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -283,9 +300,6 @@ function HomePage() {
     setShowDialog(false);
   };
 
-  // Get upcoming games count (games with future dates)
-  const upcomingGamesCount = gamesList.length;
-
   return (
     <div className={styles.container}>
       <nav className={styles.navbar}>
@@ -293,6 +307,16 @@ function HomePage() {
         <div className={styles.navButtons}>
           {currentUser ? (
             <>
+              {pendingRequests.length > 0 && (
+                <button 
+                  className={styles.notificationBtn} 
+                  onClick={() => navigate(`/notifications`)}
+                  title={`${pendingRequests.length} בקשות ממתינות`}
+                >
+                  <span className={styles.notificationIcon}>🔔</span>
+                  <span className={styles.notificationBadge}>{pendingRequests.length}</span>
+                </button>
+              )}
               <button className={styles.navBtn} title="פרופיל משתמש" onClick={handleProfileClick}>
                 <span className={styles.navIcon}>👤</span>
                 {userProfile?.name || currentUser.displayName || 'משתמש'} (רמה {userProfile?.level || 2})
@@ -374,38 +398,16 @@ function HomePage() {
             </div>
           </div>
         )}
-      </div>
 
-      <footer className={styles.infoBar}>
-        <div className={styles.infoItem}>
-          <span className={styles.infoIcon}>🎮</span>
-          <div className={styles.infoContent}>
-            <p className={styles.infoLabel}>משחקים קרובים</p>
-            <p className={styles.infoValue}>{upcomingGamesCount} משחקים</p>
+        {/* Weather Widget - Bottom Right */}
+        <div className={styles.weatherWidget}>
+          <span className={styles.weatherIcon}>🌤️</span>
+          <div className={styles.weatherInfo}>
+            <p className={styles.weatherTemp}>28°C</p>
+            <p className={styles.weatherDesc}>שמש</p>
           </div>
         </div>
-        <div className={styles.infoItem}>
-          <span className={styles.infoIcon}>🌤️</span>
-          <div className={styles.infoContent}>
-            <p className={styles.infoLabel}>מזג אוויר</p>
-            <p className={styles.infoValue}>28°C, שמש</p>
-          </div>
-        </div>
-        <div className={styles.infoItem}>
-          <span className={styles.infoIcon}>📍</span>
-          <div className={styles.infoContent}>
-            <p className={styles.infoLabel}>מיקום</p>
-            <p className={styles.infoValue}>חוף תל אביב</p>
-          </div>
-        </div>
-        <div className={styles.infoItem}>
-          <span className={styles.infoIcon}>👥</span>
-          <div className={styles.infoContent}>
-            <p className={styles.infoLabel}>שחקנים פעילים</p>
-            <p className={styles.infoValue}>{gamesList.reduce((sum, g) => sum + (g.players?.length || 0), 0)} שחקנים</p>
-          </div>
-        </div>
-      </footer>
+      </div>
     </div>
   );
 }
