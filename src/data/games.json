@@ -7,13 +7,14 @@
     },
     "date": "2026-02-05",
     "time": "17:00",
-    "organizer": "David Cohen",
+    "organizer": "דוד כהן",
     "playersNeeded": 4,
     "currentPlayers": 2,
-    "level": "Intermediate",
-    "notes": "Bring your own ball!",
+    "level": "ביניים",
+    "notes": "הביאו כדור משלכם!",
     "meetingPointImage": null,
-    "meetingPointText": "Near the volleyball nets"
+    "meetingPointText": "ליד רשתות הכדורעף",
+    "players": ["דוד כהן", "יוני גולדברג"]
   },
   {
     "id": "2",
@@ -23,13 +24,14 @@
     },
     "date": "2026-02-06",
     "time": "18:00",
-    "organizer": "Sarah Levy",
+    "organizer": "שרה לוי",
     "playersNeeded": 6,
     "currentPlayers": 4,
-    "level": "Advanced",
-    "notes": "Competitive game, experienced players only",
+    "level": "מתקדמים",
+    "notes": "משחק תחרותי, שחקנים מנוסים בלבד",
     "meetingPointImage": null,
-    "meetingPointText": "By the lifeguard stand"
+    "meetingPointText": "ליד מגדל המציל",
+    "players": ["שרה לוי", "אמיר כרמי", "נועה שפיר", "רחל מזרחי"]
   },
   {
     "id": "3",
@@ -39,13 +41,14 @@
     },
     "date": "2026-02-07",
     "time": "16:30",
-    "organizer": "Michael Ben-David",
+    "organizer": "מיכאל בן דוד",
     "playersNeeded": 4,
     "currentPlayers": 1,
-    "level": "Beginner",
-    "notes": "Beginners welcome! We'll teach you the basics",
+    "level": "מתחילים",
+    "notes": "מתחילים מוזמנים! נלמד אתכם את היסודות",
     "meetingPointImage": null,
-    "meetingPointText": "At the main entrance"
+    "meetingPointText": "בכניסה הראשית",
+    "players": ["מיכאל בן דוד"]
   },
   {
     "id": "4",
@@ -55,13 +58,14 @@
     },
     "date": "2026-02-08",
     "time": "17:00",
-    "organizer": "Rachel Mizrahi",
+    "organizer": "רחל מזרחי",
     "playersNeeded": 4,
     "currentPlayers": 3,
-    "level": "Intermediate",
-    "notes": "Sunset game session",
+    "level": "ביניים",
+    "notes": "משחק בשקיעה",
     "meetingPointImage": null,
-    "meetingPointText": "Near the palm trees"
+    "meetingPointText": "ליד עצי הדקל",
+    "players": ["רחל מזרחי", "דוד כהן", "אמיר כרמי"]
   },
   {
     "id": "5",
@@ -71,13 +75,14 @@
     },
     "date": "2026-02-09",
     "time": "10:00",
-    "organizer": "Yoni Goldberg",
+    "organizer": "יוני גולדברג",
     "playersNeeded": 6,
     "currentPlayers": 2,
-    "level": "All Levels",
-    "notes": "Morning game, coffee after!",
+    "level": "לכל הרמות",
+    "notes": "משחק בוקר, קפה אחרי!",
     "meetingPointImage": null,
-    "meetingPointText": "North beach section"
+    "meetingPointText": "חלק צפוני של החוף",
+    "players": ["יוני גולדברג", "נועה שפיר"]
   },
   {
     "id": "6",
@@ -87,12 +92,30 @@
     },
     "date": "2026-02-10",
     "time": "19:00",
-    "organizer": "Noa Shafir",
+    "organizer": "נועה שפיר",
     "playersNeeded": 4,
     "currentPlayers": 3,
-    "level": "Beginner",
-    "notes": "Fun casual game, all welcome",
+    "level": "מתחילים",
+    "notes": "משחק כיפי וקליל, כולם מוזמנים",
     "meetingPointImage": null,
-    "meetingPointText": "South beach area"
+    "meetingPointText": "אזור חוף דרומי",
+    "players": ["נועה שפיר", "מיכאל בן דוד", "יוני גולדברג"]
+  },
+  {
+    "id": "7",
+    "coordinates": {
+      "lat": 32.0835,
+      "lng": 34.7720
+    },
+    "date": "2026-02-11",
+    "time": "17:30",
+    "organizer": "אמיר כרמי",
+    "playersNeeded": 6,
+    "currentPlayers": 6,
+    "level": "מתקדמים",
+    "notes": "משחק מלא! רשימת המתנה פתוחה",
+    "meetingPointImage": null,
+    "meetingPointText": "ליד מגדל המים",
+    "players": ["אמיר כרמי", "שרה לוי", "רחל מזרחי", "דוד כהן", "יוני גולדברג", "נועה שפיר"]
   }
 ]

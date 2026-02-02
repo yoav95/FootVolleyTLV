@@ -6,38 +6,45 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: linear-gradient(135deg, #fef6e4 0%, #fff8e7 50%, #ffe8d6 100%);
 }
 
 .backLink {
   display: inline-flex;
   align-items: center;
-  color: #646cff;
+  color: #00b4d8;
   text-decoration: none;
   margin-bottom: 1.5rem;
   font-size: 1rem;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
   gap: 0.5rem;
-  padding: 0.5rem 0;
+  padding: 0.5rem 1rem;
+  background: rgba(0, 180, 216, 0.1);
+  border-radius: 25px;
+  font-weight: 600;
 }
 
 .backLink:hover {
-  color: #5155d9;
+  color: #0096c7;
+  background: rgba(0, 180, 216, 0.2);
+  transform: translateX(5px);
 }
 
 .header {
   text-align: center;
   margin-bottom: 2rem;
   padding: 2rem 0;
-  border-bottom: 2px solid #333;
+  border-bottom: 3px solid rgba(255, 209, 102, 0.5);
   direction: rtl;
 }
 
 .title {
   font-size: 3rem;
-  color: #646cff;
+  color: #00b4d8;
   margin-bottom: 0.5rem;
   margin-top: 0;
   font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 180, 216, 0.2);
 }
 
 .locationInfo {

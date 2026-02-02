@@ -2,6 +2,11 @@
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
+  background: linear-gradient(135deg, #ffffff 0%, #fff8e7 100%);
+  padding: 2rem;
+  border-radius: 25px;
+  border: 3px solid #ffd166;
+  box-shadow: 0 8px 32px rgba(255, 167, 38, 0.3), 0 0 0 1px rgba(0, 180, 216, 0.2);
 }
 
 .formRow {
@@ -18,7 +23,7 @@
 .label {
   margin-bottom: 0.5rem;
   font-weight: 600;
-  color: #fff;
+  color: #023047;
   font-size: 0.95rem;
 }
 
@@ -26,20 +31,22 @@
 .select,
 .textarea {
   padding: 0.8rem;
-  border: 1px solid #333;
-  border-radius: 8px;
-  background: #2a2a2a;
-  color: #fff;
+  border: 2px solid #ffd166;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.8);
+  color: #023047;
   font-size: 1rem;
   font-family: inherit;
-  transition: border-color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .input:focus,
 .select:focus,
 .textarea:focus {
   outline: none;
-  border-color: #646cff;
+  border-color: #00b4d8;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.1);
 }
 
 .textarea {
@@ -54,27 +61,30 @@
 .fileInputLabel {
   display: inline-block;
   padding: 0.8rem;
-  background: #2a2a2a;
-  border: 1px solid #333;
-  border-radius: 8px;
-  color: #fff;
+  background: rgba(255, 255, 255, 0.8);
+  border: 2px solid #ffd166;
+  border-radius: 15px;
+  color: #023047;
   cursor: pointer;
   text-align: center;
-  transition: border-color 0.3s ease;
+  transition: all 0.3s ease;
   margin-bottom: 0.5rem;
+  font-weight: 600;
 }
 
 .fileInputLabel:hover {
-  border-color: #646cff;
-  background: #323232;
+  border-color: #00b4d8;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.1);
 }
 
 .imagePreview {
   width: 100%;
   max-height: 200px;
-  border-radius: 8px;
+  border-radius: 15px;
   margin-top: 0.5rem;
   object-fit: cover;
+  border: 2px solid #ffd166;
 }
 
 .buttons {
@@ -89,7 +99,7 @@
   flex: 1;
   padding: 0.8rem 1.5rem;
   border: none;
-  border-radius: 8px;
+  border-radius: 25px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -97,18 +107,27 @@
 }
 
 .submitBtn {
-  background-color: #646cff;
+  background: linear-gradient(135deg, #00b4d8 0%, #0096c7 100%);
   color: white;
+  box-shadow: 0 4px 12px rgba(0, 180, 216, 0.3);
 }
 
 .submitBtn:hover {
-  background-color: #535bf2;
-  transform: translateY(-1px);
+  background: linear-gradient(135deg, #0096c7 0%, #0077b6 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 180, 216, 0.4);
 }
 
 .cancelBtn {
-  background-color: #555;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
   color: white;
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+}
+
+.cancelBtn:hover {
+  background: linear-gradient(135deg, #ee5a6f 0%, #f06595 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255, 107, 107, 0.4);
 }
 
 .cancelBtn:hover {

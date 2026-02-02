@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
-import { games } from '../data/mockData';
 import GameForm from './GameForm';
 import styles from './GameCreationPage.module.css';
 
@@ -20,22 +18,9 @@ function GameCreationPage() {
     );
   }
 
-  const handleAddGame = (formData) => {
-    const newGame = {
-      id: Date.now().toString(),
-      coordinates: { lat, lng },
-      date: formData.date,
-      time: formData.time,
-      organizer: formData.organizer,
-      playersNeeded: parseInt(formData.playersNeeded),
-      currentPlayers: 1,
-      level: formData.level,
-      notes: formData.notes,
-      meetingPointImage: formData.meetingPointImage,
-      meetingPointText: formData.meetingPointText
-    };
-    
-    games.push(newGame);
+  const location = { lat, lng };
+
+  const handleSuccess = () => {
     navigate('/');
   };
 
@@ -55,7 +40,7 @@ function GameCreationPage() {
       </header>
 
       <div className={styles.formWrapper}>
-        <GameForm onSubmit={handleAddGame} onCancel={handleCancel} />
+        <GameForm location={location} onSuccess={handleSuccess} onCancel={handleCancel} />
       </div>
     </div>
   );

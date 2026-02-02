@@ -1,15 +1,18 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 
+// Import the functions you need from the SDKs you need
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
 // Your web app's Firebase configuration
-// Replace these values with your actual Firebase project configuration
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyCDX3tmrEDCnDMxWIqXXtazrKOk6YgBm7I",
+  authDomain: "footvolleytlv-9e5f6.firebaseapp.com",
+  projectId: "footvolleytlv-9e5f6",
+  storageBucket: "footvolleytlv-9e5f6.firebasestorage.app",
+  messagingSenderId: "494046065426",
+  appId: "1:494046065426:web:935fe40024a1f455cef9cb"
 };
 
 // Initialize Firebase

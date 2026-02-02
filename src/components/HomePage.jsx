@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MapContainer, TileLayer, GeoJSON, Marker, useMapEvent, useMap, CircleMarker, Popup } from 'react-leaflet';
-import { games } from '../data/mockData';
+import { GiSoccerBall } from 'react-icons/gi';
+import { getAllGames } from '../firebase/gameService';
+import { AuthContext } from '../App';
 import styles from './HomePage.module.css';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -37,15 +39,20 @@ function MapClickHandler({ setSelectedLocation, setShowDialog, setPopupPosition 
 // Function to get color based on level
 function getLevelColor(level) {
   const levelMap = {
+    'מתחילים': '#4ade80',
+    'ביניים': '#fbbf24',
+    'מתקדמים': '#ef4444',
+    'לכל הרמות': '#8b5cf6',
+    // English fallbacks
     'Beginner': '#4ade80',
     'Intermediate': '#fbbf24',
     'Advanced': '#ef4444',
     'All Levels': '#8b5cf6'
   };
-  return levelMap[level] || '#646cff';
+  return levelMap[level] || '#00b4d8';
 }
 
-// Game Marker Component with circular progress
+// Game Marker Component with soccer ball icon
 function GameMarker({ game, navigate }) {
   const color = getLevelColor(game.level);
   const progressPercentage = (game.currentPlayers / game.playersNeeded) * 100;
@@ -54,74 +61,174 @@ function GameMarker({ game, navigate }) {
   // Create a unique popup key to force updates
   const popupKey = `${game.id}-${game.currentPlayers}`;
 
+  // Create custom icon with soccer ball
+  const createSoccerBallIcon = (fillColor) => {
+    const isFull = game.currentPlayers >= game.playersNeeded;
+    const progressPercentage = (game.currentPlayers / game.playersNeeded) * 100;
+    const dashArray = (progressPercentage / 100) * (2 * Math.PI * 20);
+    
+    const html = `
+      <div style="position: relative; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center;">
+        <svg style="position: absolute; width: 56px; height: 56px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));" viewBox="0 0 56 56">
+          <!-- Background circle -->
+          <circle cx="28" cy="28" r="24" fill="white" stroke="white" stroke-width="2"/>
+          <!-- Progress ring background -->
+          <circle cx="28" cy="28" r="20" fill="none" stroke="rgba(0,180,216,0.2)" stroke-width="2.5"/>
+          <!-- Progress ring (filled) -->
+          <circle 
+            cx="28" 
+            cy="28" 
+            r="20" 
+            fill="none" 
+            stroke="${isFull ? '#ff6b6b' : '#00b4d8'}" 
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-dasharray="${dashArray} ${2 * Math.PI * 20}"
+            transform="rotate(-90 28 28)"
+          />
+          <!-- Colored soccer ball circle -->
+          <circle cx="28" cy="28" r="16" fill="${isFull ? '#9ca3af' : fillColor}" stroke="white" stroke-width="1.5"/>
+          <!-- Soccer ball pentagon pattern -->
+          <g fill="white" opacity="0.7">
+            <circle cx="28" cy="28" r="3"/>
+            <circle cx="28" cy="17" r="2"/>
+            <circle cx="36" cy="22" r="2"/>
+            <circle cx="36" cy="34" r="2"/>
+            <circle cx="28" cy="39" r="2"/>
+            <circle cx="20" cy="34" r="2"/>
+            <circle cx="20" cy="22" r="2"/>
+          </g>
+        </svg>
+      </div>
+    `;
+    
+    return L.divIcon({
+      html: html,
+      iconSize: [56, 56],
+      iconAnchor: [28, 28],
+      popupAnchor: [0, -28],
+      className: 'custom-soccer-icon'
+    });
+  };
+
   return (
-    <>
-      {/* Progress ring background (empty ring) */}
-      <CircleMarker
-        center={[game.coordinates.lat, game.coordinates.lng]}
-        radius={16}
-        fillColor="transparent"
-        color="#ffffff"
-        weight={4}
-        opacity={0.8}
-        fillOpacity={0}
-        interactive={false}
-      />
-      {/* Progress ring (filled portion) */}
-      <CircleMarker
-        center={[game.coordinates.lat, game.coordinates.lng]}
-        radius={16}
-        fillColor="transparent"
-        color="#646cff"
-        weight={5}
-        opacity={1}
-        fillOpacity={0}
-        interactive={false}
-        dashArray={`${(progressPercentage / 100) * (2 * Math.PI * 16)} ${2 * Math.PI * 16}`}
-      />
-      {/* Main dot marker */}
-      <CircleMarker
-        key={popupKey}
-        center={[game.coordinates.lat, game.coordinates.lng]}
-        radius={10}
-        fillColor={color}
-        color={color}
-        weight={2}
-        opacity={1}
-        fillOpacity={0.9}
-        eventHandlers={{
-          click: (e) => {
-            e.target.openPopup();
-          }
-        }}
-      >
-        <Popup>
-          <div style={{ cursor: 'pointer', minWidth: '200px' }} onClick={() => navigate(`/game/${game.id}`)}>
-            <strong>משחק של {game.organizer}</strong><br/>
-            תאריך: {game.date}<br/>
-            שעה: {game.time}<br/>
-            רמה: {game.level}<br/>
-            שחקנים: {game.currentPlayers}/{game.playersNeeded}
-            <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #ccc' }}>
-              <small style={{ color: '#666' }}>לחץ כדי לראות פרטים</small>
+    <Marker
+      key={popupKey}
+      position={[game.coordinates.lat, game.coordinates.lng]}
+      icon={createSoccerBallIcon(color)}
+      eventHandlers={{
+        click: (e) => {
+          e.target.openPopup();
+        }
+      }}
+    >
+      <Popup className={styles.customPopup}>
+        <div className={styles.popupContentWrapper} onClick={() => navigate(`/game/${game.id}`)}>
+          <div className={styles.popupHeader}>
+            <span className={styles.popupOrganizer}>משחק של {game.organizer}</span>
+            <span className={styles.popupLevel} style={{ backgroundColor: color }}>{game.level}</span>
+          </div>
+          <div className={styles.popupDetails}>
+              <div className={styles.popupDetailItem}>
+                <span className={styles.popupIcon}>📅</span>
+                <span>{game.date}</span>
+              </div>
+              <div className={styles.popupDetailItem}>
+                <span className={styles.popupIcon}>🕐</span>
+                <span>{game.time}</span>
+              </div>
+              <div className={styles.popupDetailItem}>
+                <span className={styles.popupIcon}>👥</span>
+                <span>{game.currentPlayers}/{game.playersNeeded} שחקנים</span>
+              </div>
+            </div>
+            <div className={styles.popupFooter}>
+              <span className={styles.popupCta}>לחץ לפרטים מלאים ←</span>
             </div>
           </div>
         </Popup>
-      </CircleMarker>
-    </>
-  );
-}
+      </Marker>
+    );
+  }
 
 function HomePage() {
+  const [gamesList, setGamesList] = useState([]);
+  const [loadingGames, setLoadingGames] = useState(true);
+  const [userProfile, setUserProfile] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
+  const { currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchGames = async () => {
+      try {
+        setLoadingGames(true);
+        const allGames = await getAllGames();
+        setGamesList(allGames);
+      } catch (err) {
+        console.error('Error fetching games:', err);
+      } finally {
+        setLoadingGames(false);
+      }
+    };
+
+    fetchGames();
+  }, []);
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      if (currentUser) {
+        try {
+          const { getUserProfile } = await import('../firebase/authService');
+          const profile = await getUserProfile(currentUser.uid);
+          setUserProfile(profile);
+        } catch (err) {
+          console.error('Error fetching user profile:', err);
+          setUserProfile({
+            name: currentUser.displayName || 'משתמש',
+            level: 2
+          });
+        }
+      }
+    };
+
+    fetchUserProfile();
+  }, [currentUser]);
+
+  const handleLogout = async () => {
+    try {
+      const { logoutUser } = await import('../firebase/authService');
+      await logoutUser();
+      navigate('/login');
+    } catch (err) {
+      console.error('Logout error:', err);
+    }
+  };
+
+  const handleProfileClick = () => {
+    if (!currentUser) {
+      navigate('/login');
+    } else {
+      navigate('/profile');
+    }
+  };
+
+  const handleCreateGame = () => {
+    if (!currentUser) {
+      navigate('/login');
+      return;
+    }
+    if (selectedLocation) {
+      navigate(`/create-game?lat=${selectedLocation.lat}&lng=${selectedLocation.lng}`);
+    }
+  };
 
   // Create GeoJSON from games
   const geoJsonData = {
     type: 'FeatureCollection',
-    features: games.map((game) => ({
+    features: gamesList.map((game) => ({
       type: 'Feature',
       geometry: {
         type: 'Point',
@@ -171,33 +278,36 @@ function HomePage() {
     });
   };
 
-  const handleCreateGame = () => {
-    if (selectedLocation) {
-      navigate(`/create-game?lat=${selectedLocation.lat}&lng=${selectedLocation.lng}`);
-    }
-  };
-
   const handleCancel = () => {
     setSelectedLocation(null);
     setShowDialog(false);
   };
 
   // Get upcoming games count (games with future dates)
-  const upcomingGamesCount = games.length;
+  const upcomingGamesCount = gamesList.length;
 
   return (
     <div className={styles.container}>
       <nav className={styles.navbar}>
         <h2 className={styles.navTitle}>FootVolley TLV</h2>
         <div className={styles.navButtons}>
-          <button className={styles.navBtn} title="פרופיל משתמש">
-            <span className={styles.navIcon}>👤</span>
-            פרופיל
-          </button>
-          <button className={styles.navBtn} title="הגדרות">
-            <span className={styles.navIcon}>⚙️</span>
-            הגדרות
-          </button>
+          {currentUser ? (
+            <>
+              <button className={styles.navBtn} title="פרופיל משתמש" onClick={handleProfileClick}>
+                <span className={styles.navIcon}>👤</span>
+                {userProfile?.name || currentUser.displayName || 'משתמש'} (רמה {userProfile?.level || 2})
+              </button>
+              <button className={styles.navBtn} title="התנתקות" onClick={handleLogout}>
+                <span className={styles.navIcon}>🚪</span>
+                התנתקות
+              </button>
+            </>
+          ) : (
+            <button className={styles.navBtn} title="התחברות" onClick={() => navigate('/login')}>
+              <span className={styles.navIcon}>🔑</span>
+              התחברות
+            </button>
+          )}
         </div>
       </nav>
 
@@ -209,18 +319,18 @@ function HomePage() {
       <div className={styles.mapContainer}>
         <MapContainer 
           center={[32.0853, 34.7692]} 
-          zoom={12} 
-          minZoom={10}
+          zoom={13} 
+          minZoom={13}
           maxZoom={19}
           style={{ height: '100%', width: '100%' }}
-          maxBounds={[[31.8, 34.6], [32.3, 35.0]]}
+          maxBounds={[[32.02, 34.74], [32.15, 34.81]]}
           maxBoundsViscosity={1.0}
         >
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
-          {games.length > 0 && games.map((game) => (
+          {!loadingGames && gamesList.length > 0 && gamesList.map((game) => (
             <GameMarker key={game.id} game={game} navigate={navigate} />
           ))}
           {selectedLocation && (
@@ -292,7 +402,7 @@ function HomePage() {
           <span className={styles.infoIcon}>👥</span>
           <div className={styles.infoContent}>
             <p className={styles.infoLabel}>שחקנים פעילים</p>
-            <p className={styles.infoValue}>{games.reduce((sum, g) => sum + g.currentPlayers, 0)} שחקנים</p>
+            <p className={styles.infoValue}>{gamesList.reduce((sum, g) => sum + (g.players?.length || 0), 0)} שחקנים</p>
           </div>
         </div>
       </footer>

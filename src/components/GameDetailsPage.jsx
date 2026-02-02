@@ -1,13 +1,41 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import { games } from '../data/mockData';
+import { useState, useEffect, useContext } from 'react';
+import { getGameById, joinGame, leaveGame } from '../firebase/gameService';
+import { AuthContext } from '../App';
 import styles from './GameDetailsPage.module.css';
 
 function GameDetailsPage() {
   const { gameId } = useParams();
   const navigate = useNavigate();
-  const game = games.find(g => g.id === gameId);
+  const { currentUser } = useContext(AuthContext);
+  const [game, setGame] = useState(null);
   const [address, setAddress] = useState('Loading...');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [actionLoading, setActionLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchGame = async () => {
+      try {
+        setLoading(true);
+        const gameData = await getGameById(gameId);
+        if (gameData) {
+          setGame(gameData);
+        } else {
+          setError('משחק לא נמצא');
+        }
+      } catch (err) {
+        setError('שגיאה בטעינת המשחק');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (gameId) {
+      fetchGame();
+    }
+  }, [gameId]);
 
   // Fetch address from coordinates
   useEffect(() => {
@@ -36,30 +64,72 @@ function GameDetailsPage() {
     }
   }, [game]);
 
-  if (!game) {
+  if (loading) {
     return (
       <div className={styles.container}>
-        <p>משחק לא נמצא.</p>
+        <p>טוען...</p>
+      </div>
+    );
+  }
+
+  if (error || !game) {
+    return (
+      <div className={styles.container}>
+        <p>{error || 'משחק לא נמצא.'}</p>
         <Link to="/">← חזרה למפה</Link>
       </div>
     );
   }
 
-  const handleJoinGame = () => {
-    game.currentPlayers += 1;
-    // In a real app, this would save to a database
-    alert(`הצטרפת למשחק של ${game.organizer}!`);
+  const handleJoinGame = async () => {
+    if (!currentUser) {
+      navigate('/login');
+      return;
+    }
+
+    setActionLoading(true);
+    try {
+      await joinGame(gameId, currentUser.uid);
+      const updatedGame = await getGameById(gameId);
+      setGame(updatedGame);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setActionLoading(false);
+    }
   };
+
+  const handleLeaveGame = async () => {
+    if (!currentUser) return;
+
+    setActionLoading(true);
+    try {
+      await leaveGame(gameId, currentUser.uid);
+      const updatedGame = await getGameById(gameId);
+      setGame(updatedGame);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setActionLoading(false);
+    }
+    // In a real app, this would save to a database
+    alert(`הצטרפת למשחק!`);
+  };
+
+  const isUserInGame = currentUser && game.players && game.players.includes(currentUser.uid);
+  const isFull = game.players && game.players.length >= game.playersNeeded;
 
   return (
     <div className={styles.container}>
       <Link to="/" className={styles.backLink}>← חזרה למפה</Link>
       
+      {error && <div className={styles.error}>{error}</div>}
+      
       <div className={styles.gameCard}>
         <header className={styles.header}>
-          <h1 className={styles.title}>משחק של {game.organizer}</h1>
-          <span className={`${styles.level} ${styles[game.level.toLowerCase().replace(/\s+/g, '-')]}`}>
-            {game.level}
+          <h1 className={styles.title}>משחק כדורעף</h1>
+          <span className={`${styles.level} ${styles[`level-${game.level}`.toLowerCase()]}`}>
+            רמה {game.level}
           </span>
         </header>
 
@@ -73,14 +143,30 @@ function GameDetailsPage() {
             <h3 className={styles.sectionTitle}>👥 שחקנים</h3>
             <div className={styles.players}>
               <p className={styles.detail}>
-                {game.currentPlayers} / {game.playersNeeded} שחקנים
+                {game.players?.length || 0} / {game.playersNeeded} שחקנים
               </p>
               <div className={styles.progressBar}>
                 <div 
                   className={styles.progress} 
-                  style={{ width: `${(game.currentPlayers / game.playersNeeded) * 100}%` }}
+                  style={{ width: `${((game.players?.length || 0) / game.playersNeeded) * 100}%` }}
                 ></div>
               </div>
+              {game.players && game.players.length > 0 && (
+                <div className={styles.playersList}>
+                  <h4 className={styles.playersListTitle}>רשימת השחקנים:</h4>
+                  <ul className={styles.playerListItems}>
+                    {game.players.map((playerId, index) => (
+                      <li key={index} className={styles.playerItem}>
+                        <span className={styles.playerNumber}>{index + 1}.</span>
+                        <span className={styles.playerName}>{playerId === game.organizerId ? 'מארגן' : 'שחקן'}</span>
+                        {playerId === game.organizerId && (
+                          <span className={styles.organizerBadge}>🔸</span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
 
@@ -112,16 +198,20 @@ function GameDetailsPage() {
         </div>
 
         <div className={styles.actions}>
-          {game.currentPlayers < game.playersNeeded ? (
-            <button onClick={handleJoinGame} className={styles.joinBtn}>
-              הצטרפות למשחק
+          {!isUserInGame && !isFull ? (
+            <button onClick={handleJoinGame} className={styles.joinBtn} disabled={actionLoading}>
+              {actionLoading ? 'מצטרף...' : 'הצטרפות למשחק'}
+            </button>
+          ) : isUserInGame && !isFull ? (
+            <button onClick={handleLeaveGame} className={styles.leaveBtn} disabled={actionLoading}>
+              {actionLoading ? 'עוזב...' : 'עזיבה מהמשחק'}
             </button>
           ) : (
             <button className={styles.fullBtn} disabled>
               המשחק מלא
             </button>
           )}
-          <button onClick={() => navigate('/')} className={styles.cancelBtn}>
+          <button onClick={() => navigate('/')} className={styles.cancelBtn} disabled={actionLoading}>
             חזרה
           </button>
         </div>

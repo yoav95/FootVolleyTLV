@@ -1,19 +1,20 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import { AuthContext } from '../App';
+import { createGame } from '../firebase/gameService';
 import styles from './GameForm.module.css';
 
-function GameForm({ onSubmit, onCancel }) {
+function GameForm({ location, onSuccess, onCancel }) {
+  const { currentUser } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     date: '',
     time: '',
-    organizer: '',
     playersNeeded: 4,
-    level: 'Intermediate',
+    level: '2',
     notes: '',
-    meetingPointImage: null,
     meetingPointText: ''
   });
-
-  const [imagePreview, setImagePreview] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,35 +24,44 @@ function GameForm({ onSubmit, onCancel }) {
     }));
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData(prev => ({
-          ...prev,
-          meetingPointImage: reader.result
-        }));
-        setImagePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit(formData);
-    setFormData({
-      date: '',
-      time: '',
-      organizer: '',
-      playersNeeded: 4,
-      level: 'Intermediate',
-      notes: '',
-      meetingPointImage: null,
-      meetingPointText: ''
-    });
-    setImagePreview(null);
+    if (!currentUser) {
+      setError('עליך להיות מחובר כדי ליצור משחק');
+      return;
+    }
+    if (!location) {
+      setError('בחר מיקום על המפה');
+      return;
+    }
+
+    setError('');
+    setLoading(true);
+
+    try {
+      const gameData = {
+        ...formData,
+        coordinates: location,
+        players: [currentUser.uid],
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+
+      await createGame(gameData, currentUser.uid);
+      setFormData({
+        date: '',
+        time: '',
+        playersNeeded: 4,
+        level: '2',
+        notes: '',
+        meetingPointText: ''
+      });
+      if (onSuccess) onSuccess();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -68,6 +78,7 @@ function GameForm({ onSubmit, onCancel }) {
             required
             className={styles.input}
             min={new Date().toISOString().split('T')[0]}
+            disabled={loading}
           />
         </div>
 
@@ -81,22 +92,9 @@ function GameForm({ onSubmit, onCancel }) {
             onChange={handleChange}
             required
             className={styles.input}
+            disabled={loading}
           />
         </div>
-      </div>
-
-      <div className={styles.formGroup}>
-        <label htmlFor="organizer" className={styles.label}>שמך *</label>
-        <input
-          type="text"
-          id="organizer"
-          name="organizer"
-          value={formData.organizer}
-          onChange={handleChange}
-          required
-          className={styles.input}
-          placeholder="הכנס את שמך"
-        />
       </div>
 
       <div className={styles.formRow}>
@@ -109,6 +107,7 @@ function GameForm({ onSubmit, onCancel }) {
             onChange={handleChange}
             required
             className={styles.select}
+            disabled={loading}
           >
             <option value="2">2</option>
             <option value="4">4</option>
@@ -127,44 +126,15 @@ function GameForm({ onSubmit, onCancel }) {
             onChange={handleChange}
             required
             className={styles.select}
+            disabled={loading}
           >
-            <option value="Beginner">מתחילים</option>
-            <option value="Intermediate">ביניים</option>
-            <option value="Advanced">מתקדמים</option>
-            <option value="All Levels">לכל הרמות</option>
+            <option value="1">מתחיל</option>
+            <option value="2">בינוני</option>
+            <option value="3">מתקדם</option>
+            <option value="4">מתקדם מאוד</option>
+            <option value="5">מומחה</option>
           </select>
         </div>
-      </div>
-
-      <div className={styles.formGroup}>
-        <label htmlFor="notes" className={styles.label}>הערות</label>
-        <textarea
-          id="notes"
-          name="notes"
-          value={formData.notes}
-          onChange={handleChange}
-          className={styles.textarea}
-          placeholder="כל מידע נוסף..."
-          rows="3"
-        />
-      </div>
-
-      <div className={styles.formGroup}>
-        <label className={styles.label}>תמונת נקודת המפגש</label>
-        <label htmlFor="meetingPointImage" className={styles.fileInputLabel}>
-          📸 בחר תמונה
-        </label>
-        <input
-          type="file"
-          id="meetingPointImage"
-          name="meetingPointImage"
-          accept="image/*"
-          onChange={handleImageChange}
-          className={styles.fileInput}
-        />
-        {imagePreview && (
-          <img src={imagePreview} alt="תצוגה מקדימה" className={styles.imagePreview} />
-        )}
       </div>
 
       <div className={styles.formGroup}>
@@ -177,14 +147,31 @@ function GameForm({ onSubmit, onCancel }) {
           onChange={handleChange}
           className={styles.input}
           placeholder="למשל: 'ליד הרשתות כדורעף', 'ליד מגדל המציל'"
+          disabled={loading}
         />
       </div>
 
-      <div className={styles.buttons}>
-        <button type="submit" className={styles.submitBtn}>
-          יצירת משחק
+      <div className={styles.formGroup}>
+        <label htmlFor="notes" className={styles.label}>הערות (אופציונלי)</label>
+        <textarea
+          id="notes"
+          name="notes"
+          value={formData.notes}
+          onChange={handleChange}
+          className={styles.textarea}
+          placeholder="הוסף הערות נוספות"
+          rows="3"
+          disabled={loading}
+        />
+      </div>
+
+      {error && <div className={styles.error}>{error}</div>}
+
+      <div className={styles.buttonGroup}>
+        <button type="submit" className={styles.submitBtn} disabled={loading}>
+          {loading ? 'יוצר משחק...' : 'יצור משחק'}
         </button>
-        <button type="button" onClick={onCancel} className={styles.cancelBtn}>
+        <button type="button" onClick={onCancel} className={styles.cancelBtn} disabled={loading}>
           ביטול
         </button>
       </div>
