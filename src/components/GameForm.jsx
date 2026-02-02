@@ -111,6 +111,20 @@ function GameForm({ location, onSuccess, onCancel }) {
     <form onSubmit={handleSubmit} className={styles.form}>
       {checkingGame ? (
         <div className={styles.loading}>בודק משחקים קיימים...</div>
+      ) : !userProfile?.phone ? (
+        <div className={styles.activeGameMessage}>
+          <p>⚠️ נדרש מספר טלפון</p>
+          <p>עליך להוסיף מספר טלפון לפרופיל שלך לפני יצירת משחק</p>
+          <p>מספר הטלפון יאפשר לשחקנים אחרים ליצור איתך קשר</p>
+          <button 
+            type="button" 
+            onClick={() => window.location.href = '/profile'} 
+            className={styles.submitBtn}
+            style={{marginTop: '1rem'}}
+          >
+            עדכן פרופיל
+          </button>
+        </div>
       ) : activeGame ? (
         <div className={styles.activeGameMessage}>
           <p>⚠️ אתה כבר יצרת משחק</p>
