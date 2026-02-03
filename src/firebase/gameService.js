@@ -248,6 +248,12 @@ export const deleteGame = async (gameId, organizerId) => {
 // Request to join a game (adds to pending requests)
 export const requestToJoinGame = async (gameId, userId) => {
   try {
+    // Check if user has phone number
+    const userDoc = await getDoc(doc(db, 'users', userId));
+    if (!userDoc.exists() || !userDoc.data()?.phone) {
+      throw new Error('עליך להוסיף מספר טלפון לפרופיל שלך כדי להצטרף לשחקים');
+    }
+
     const gameRef = doc(db, 'games', gameId);
     const gameSnap = await getDoc(gameRef);
     
@@ -353,6 +359,78 @@ export const rejectJoinRequest = async (gameId, userId, organizerId) => {
 
     await updateDoc(gameRef, {
       pendingRequests: updatedPending,
+      updatedAt: Timestamp.now()
+    });
+
+    return true;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+// Add a comment to a game
+export const addCommentToGame = async (gameId, userId, userName, commentText) => {
+  try {
+    const gameRef = doc(db, 'games', gameId);
+    const gameSnap = await getDoc(gameRef);
+    
+    if (!gameSnap.exists()) {
+      throw new Error('Game not found');
+    }
+
+    const gameData = gameSnap.data();
+    const comments = gameData.comments || [];
+
+    // Add new comment
+    const newComment = {
+      id: Date.now().toString(),
+      userId: userId,
+      userName: userName,
+      text: commentText,
+      createdAt: Timestamp.now()
+    };
+
+    comments.push(newComment);
+
+    await updateDoc(gameRef, {
+      comments: comments,
+      updatedAt: Timestamp.now()
+    });
+
+    return newComment;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+// Delete a comment from a game
+export const deleteCommentFromGame = async (gameId, commentId, userId) => {
+  try {
+    const gameRef = doc(db, 'games', gameId);
+    const gameSnap = await getDoc(gameRef);
+    
+    if (!gameSnap.exists()) {
+      throw new Error('Game not found');
+    }
+
+    const gameData = gameSnap.data();
+    const comments = gameData.comments || [];
+    
+    // Find and verify ownership
+    const commentIndex = comments.findIndex(c => c.id === commentId);
+    if (commentIndex === -1) {
+      throw new Error('Comment not found');
+    }
+
+    if (comments[commentIndex].userId !== userId && gameData.organizerId !== userId) {
+      throw new Error('You can only delete your own comments');
+    }
+
+    // Remove comment
+    comments.splice(commentIndex, 1);
+
+    await updateDoc(gameRef, {
+      comments: comments,
       updatedAt: Timestamp.now()
     });
 

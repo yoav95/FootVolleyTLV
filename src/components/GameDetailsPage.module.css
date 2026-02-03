@@ -1,12 +1,13 @@
 .container {
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
   margin: 0;
-  padding: 2rem;
+  padding: 2.5rem 2rem;
   display: flex;
   flex-direction: column;
   background: linear-gradient(135deg, #fef6e4 0%, #fff8e7 50%, #ffe8d6 100%);
-  overflow-y: auto;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .backLink {
@@ -14,88 +15,94 @@
   align-items: center;
   color: #00b4d8;
   text-decoration: none;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
   font-size: 1rem;
   transition: all 0.3s ease;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
   width: fit-content;
-  background: rgba(0, 180, 216, 0.1);
+  background: rgba(0, 180, 216, 0.15);
   border-radius: 25px;
-  font-weight: 600;
+  font-weight: 700;
   border: 2px solid rgba(0, 180, 216, 0.3);
 }
 
 .backLink:hover {
   color: #0096c7;
-  background: rgba(0, 180, 216, 0.2);
+  background: rgba(0, 180, 216, 0.25);
   transform: translateX(-5px);
+  box-shadow: 0 4px 12px rgba(0, 180, 216, 0.2);
 }
 
 .gameCard {
   background: linear-gradient(135deg, #ffffff 0%, #fff8e7 100%);
   border: 3px solid #ffd166;
-  border-radius: 25px;
-  padding: 3rem;
-  box-shadow: 0 8px 32px rgba(255, 167, 38, 0.3), 0 0 0 1px rgba(0, 180, 216, 0.2);
+  border-radius: 30px;
+  padding: 3.5rem;
+  box-shadow: 0 12px 40px rgba(255, 167, 38, 0.25), 0 2px 8px rgba(0, 0, 0, 0.08);
   flex: 1;
   display: flex;
   flex-direction: column;
-  max-width: 1200px;
+  max-width: 1400px;
   width: 100%;
   margin: 0 auto;
 }
 
 .header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 2rem;
-  padding-bottom: 1.5rem;
+  margin-bottom: 2.5rem;
+  padding-bottom: 2rem;
   border-bottom: 3px solid rgba(255, 209, 102, 0.5);
   flex-direction: row-reverse;
+  gap: 2rem;
 }
 
 .title {
-  font-size: 2rem;
-  color: #023047;
+  font-size: 2.5rem;
+  color: #00b4d8;
   margin: 0;
-  font-weight: bold;
+  font-weight: 900;
   flex: 1;
+  text-shadow: 0 2px 8px rgba(0, 180, 216, 0.1);
 }
 
 .level {
   display: inline-block;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
+  padding: 0.7rem 1.5rem;
+  border-radius: 20px;
   font-size: 0.9rem;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.5px;
 }
 
 .level.beginner {
-  background: #4ade80;
-  color: #1a1a1a;
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  color: #fff;
 }
 
 .level.intermediate {
-  background: #fbbf24;
-  color: #1a1a1a;
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  color: #fff;
 }
 
 .level.advanced {
-  background: #ef4444;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
   color: #fff;
 }
 
 .level.all-levels {
-  background: #8b5cf6;
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
   color: #fff;
 }
 
 .content {
   flex: 1;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
@@ -123,10 +130,17 @@
 
 .section {
   margin-bottom: 0;
-  background: rgba(255, 255, 255, 0.6);
-  padding: 1.5rem;
-  border-radius: 15px;
-  border-left: 4px solid #00b4d8;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 248, 231, 0.6) 100%);
+  padding: 2rem;
+  border-radius: 18px;
+  border: 2px solid rgba(255, 209, 102, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.section:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
 }
 
 .section:nth-child(3) {
@@ -134,38 +148,41 @@
 }
 
 .sectionTitle {
-  font-size: 1.1rem;
-  color: #023047;
-  margin: 0 0 0.8rem 0;
-  font-weight: 600;
+  font-size: 1.2rem;
+  color: #00b4d8;
+  margin: 0 0 1rem 0;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .detail {
   color: #023047;
-  margin: 0;
-  line-height: 1.6;
-  opacity: 0.8;
+  margin: 0.5rem 0;
+  line-height: 1.8;
+  opacity: 0.9;
+  font-weight: 500;
 }
 
 .players {
   display: flex;
   flex-direction: column;
-  gap: 0.8rem;
+  gap: 1rem;
 }
 
 .playersList {
-  margin-top: 1rem;
-  background: rgba(0, 180, 216, 0.08);
-  border-right: 4px solid #00b4d8;
-  border-radius: 10px;
-  padding: 1rem;
+  margin-top: 1.2rem;
+  background: linear-gradient(135deg, rgba(0, 180, 216, 0.12) 0%, rgba(255, 209, 102, 0.08) 100%);
+  border-right: 5px solid #00b4d8;
+  border-radius: 12px;
+  padding: 1.5rem;
 }
 
 .playersListTitle {
-  font-size: 0.95rem;
-  color: #023047;
-  margin: 0 0 0.8rem 0;
-  font-weight: 600;
+  font-size: 1rem;
+  color: #00b4d8;
+  margin: 0 0 1rem 0;
+  font-weight: 700;
 }
 
 .playerListItems {
@@ -174,41 +191,48 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 0.8rem;
 }
 
 .playerItem {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
-  padding: 0.6rem;
-  background: rgba(255, 255, 255, 0.6);
-  border-radius: 8px;
+  gap: 1rem;
+  padding: 0.8rem;
+  background: white;
+  border-radius: 10px;
   color: #023047;
   font-size: 0.95rem;
+  border: 1px solid rgba(0, 180, 216, 0.2);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s ease;
+}
+
+.playerItem:hover {
+  background: linear-gradient(135deg, rgba(0, 180, 216, 0.05) 0%, rgba(255, 209, 102, 0.05) 100%);
+  border-color: #00b4d8;
+  transform: translateX(-3px);
 }
 
 .playerNumber {
-  font-weight: bold;
+  font-weight: 900;
   color: #00b4d8;
-  min-width: 1.5rem;
+  min-width: 2rem;
+  text-align: center;
+  background: rgba(0, 180, 216, 0.15);
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
 }
 
 .playerInfo {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
-}
-
-.playerName {
+  gap: 0.2rem;
+  font-size: 0.9rem;
+  color: #023047;
   font-weight: 600;
-}
-
-.playerPhone {
-  font-size: 0.85rem;
-  color: #666;
-  font-weight: 500;
 }
 
 .organizerBadge {
@@ -219,32 +243,6 @@
   font-size: 0.8rem;
   font-weight: 600;
   white-space: nowrap;
-}
-
-.progressBar {
-  height: 10px;
-  background: rgba(255, 209, 102, 0.3);
-  border-radius: 15px;
-  overflow: hidden;
-  width: 100%;
-}
-
-.progress {
-  height: 100%;
-  background: linear-gradient(90deg, #00b4d8, #0096c7);
-  border-radius: 15px;
-  transition: width 0.3s ease;
-}
-
-.meetingPoint {
-  color: #00b4d8;
-  font-size: 0.95rem;
-  margin-top: 0.5rem;
-  margin-right: 0.5rem;
-  padding: 0.5rem;
-  background: rgba(0, 180, 216, 0.1);
-  border-right: 3px solid #00b4d8;
-  border-radius: 10px;
 }
 
 .meetingPointContainer {
@@ -282,561 +280,721 @@
   text-align: center;
 }
 
-.meetingImage {
+.meetingPoint {
+  color: #00b4d8;
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+  margin-right: 0.5rem;
+  padding: 0.8rem;
+  background: rgba(0, 180, 216, 0.1);
+  border-right: 3px solid #00b4d8;
+  border-radius: 10px;
+}
+
+.progressBar {
+  height: 10px;
+  background: rgba(255, 209, 102, 0.3);
+  border-radius: 15px;
+  overflow: hidden;
   width: 100%;
-  height: auto;
-  border-radius: 8px;
-  max-height: 300px;
-  object-fit: cover;
+  margin-top: 0.5rem;
 }
 
-.actions {
+.progress {
+  height: 100%;
+  background: linear-gradient(90deg, #00b4d8, #0096c7);
+  border-radius: 15px;
+  transition: width 0.3s ease;
+}
+
+.actionButtons {
   display: flex;
-  gap: 1rem;
-  flex-direction: row-reverse;
+  gap: 1.2rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+  padding-top: 1.5rem;
+  border-top: 2px solid rgba(255, 209, 102, 0.3);
 }
 
-.joinBtn,
-.fullBtn,
-.cancelBtn {
-  flex: 1;
-  padding: 1rem;
+.actionButton {
+  padding: 1rem 2.5rem;
   border: none;
-  border-radius: 25px;
+  border-radius: 20px;
   font-size: 1rem;
-  font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.joinBtn {
-  background: linear-gradient(135deg, #00b4d8 0%, #0096c7 100%);
-  color: white;
-  box-shadow: 0 4px 12px rgba(0, 180, 216, 0.3);
-}
-
-.joinBtn:hover {
-  background: linear-gradient(135deg, #0096c7 0%, #0077b6 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 180, 216, 0.4);
-}
-
-.fullBtn {
-  background: linear-gradient(135deg, #ccc 0%, #aaa 100%);
-  color: #666;
-  cursor: not-allowed;
-}
-
-.cancelBtn {
-  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
-  color: white;
-  border: none;
-  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
-}
-
-.cancelBtn:hover {
-  background: linear-gradient(135deg, #ee5a6f 0%, #f06595 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(255, 107, 107, 0.4);
-}
-
-.deleteBtn {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 700;
   flex: 1;
-  padding: 1rem;
-  border: none;
-  border-radius: 25px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  background: linear-gradient(135deg, #ff4757 0%, #ee3344 100%);
-  color: white;
-  box-shadow: 0 4px 12px rgba(255, 71, 87, 0.3);
+  min-height: 50px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
 }
 
-.deleteBtn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #ee3344 0%, #dd2233 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(255, 71, 87, 0.5);
+.actionButton::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
 }
 
-.deleteBtn:disabled {
-  opacity: 0.6;
+.actionButton:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.actionButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.actionButton:active {
+  transform: translateY(-1px);
+}
+
+.actionButton:disabled {
+  opacity: 0.5;
   cursor: not-allowed;
+  transform: none;
 }
 
-/* Pending Requests Styles */
-.pendingList {
+.joinButton {
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  color: white;
+}
+
+.joinButton:hover:not(:disabled) {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+}
+
+.leaveButton {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+}
+
+.leaveButton:hover:not(:disabled) {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+}
+
+.pendingRequests {
+  padding: 2rem;
+  background: linear-gradient(135deg, rgba(255, 209, 102, 0.15) 0%, rgba(255, 167, 38, 0.08) 100%);
+  border-radius: 18px;
+  border: 2px solid rgba(255, 209, 102, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.pendingRequestsTitle {
+  font-size: 1rem;
+  color: #d97706;
+  margin: 0 0 1.5rem 0;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.requestItems {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  margin-top: 1rem;
 }
 
-.pendingItem {
+.requestItem {
+  padding: 1.2rem;
+  background: white;
+  border-radius: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 1.5rem;
-  background: linear-gradient(135deg, #fff8e7 0%, #ffffff 100%);
-  border: 2px solid #ffd166;
-  border-radius: 15px;
-  box-shadow: 0 2px 8px rgba(255, 209, 102, 0.2);
+  border: 2px solid rgba(255, 209, 102, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   transition: all 0.3s ease;
 }
 
-.pendingItem:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255, 209, 102, 0.3);
+.requestItem:hover {
+  border-color: #ffd166;
+  box-shadow: 0 4px 12px rgba(255, 209, 102, 0.2);
+  transform: translateY(-1px);
 }
 
-.pendingName {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #333;
-}
-
-.pendingActions {
+.requestAction {
   display: flex;
-  gap: 0.75rem;
+  gap: 0.8rem;
 }
 
-.approveBtn,
-.rejectBtn {
+.approveButton,
+.rejectButton {
   padding: 0.6rem 1.5rem;
   border: none;
-  border-radius: 20px;
-  font-size: 0.95rem;
-  font-weight: 600;
+  border-radius: 12px;
   cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 700;
   transition: all 0.3s ease;
-  min-width: 80px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
-.approveBtn {
-  background: linear-gradient(135deg, #06d6a0 0%, #00b894 100%);
+.approveButton {
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
   color: white;
-  box-shadow: 0 2px 8px rgba(6, 214, 160, 0.3);
 }
 
-.approveBtn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #00b894 0%, #00a383 100%);
+.approveButton:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(6, 214, 160, 0.4);
+  box-shadow: 0 5px 15px rgba(74, 222, 128, 0.4);
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
 }
 
-.rejectBtn {
-  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+.rejectButton {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
   color: white;
-  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
 }
 
-.rejectBtn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #ee5a6f 0%, #f06595 100%);
+.rejectButton:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+  box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
 }
 
-.approveBtn:disabled,
-.rejectBtn:disabled {
+.noRequests {
+  color: #9ca3af;
+  font-size: 0.95rem;
+  text-align: center;
+  padding: 1rem;
+  font-style: italic;
+}
+
+.commentsSection {
+  grid-column: 1 / -1;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.12) 0%, rgba(168, 85, 247, 0.08) 100%);
+  padding: 2rem;
+  border-radius: 18px;
+  border: 2px solid rgba(139, 92, 246, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.commentForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 2px solid rgba(139, 92, 246, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.commentInput {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid rgba(139, 92, 246, 0.3);
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 100px;
+  background: #f9fafb;
+  color: #023047;
+  transition: all 0.3s ease;
+}
+
+.commentInput::placeholder {
+  color: #9ca3af;
+  font-weight: 500;
+}
+
+.commentInput:focus {
+  outline: none;
+  border-color: #8b5cf6;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15);
+}
+
+.submitCommentBtn {
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  color: white;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
+  min-height: 48px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.submitCommentBtn:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(139, 92, 246, 0.35);
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+}
+
+.submitCommentBtn:active:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.submitCommentBtn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
 }
 
-.pendingBtn {
-  flex: 1;
-  padding: 1rem;
-  border: none;
-  border-radius: 25px;
-  font-size: 1rem;
+.loginPrompt {
+  background: linear-gradient(135deg, rgba(0, 180, 216, 0.15) 0%, rgba(255, 209, 102, 0.1) 100%);
+  padding: 1.2rem;
+  border-radius: 12px;
+  color: #0369a1;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+  border-left: 4px solid #00b4d8;
   font-weight: 600;
-  cursor: not-allowed;
-  background: linear-gradient(135deg, #ffd166 0%, #ffb703 100%);
-  color: #333;
-  opacity: 0.8;
-  box-shadow: 0 4px 12px rgba(255, 209, 102, 0.3);
 }
 
+.commentsList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.commentItem {
+  background: white;
+  padding: 1.2rem;
+  border-radius: 12px;
+  border: 1px solid rgba(139, 92, 246, 0.15);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+}
+
+.commentItem:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  border-color: #8b5cf6;
+  transform: translateY(-1px);
+}
+
+.commentContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.commentMeta {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.3rem;
+  font-size: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.commentAuthor {
+  font-weight: 700;
+  color: #7c3aed;
+}
+
+.commentTime {
+  color: #9ca3af;
+  font-weight: 500;
+}
+
+.commentText {
+  color: #023047;
+  line-height: 1.7;
+  word-break: break-word;
+  font-size: 0.95rem;
+}
+
+.deleteCommentBtn {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(239, 68, 68, 0.1);
+  min-height: 36px;
+  flex-shrink: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.deleteCommentBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+}
+
+.noComments {
+  color: #9ca3af;
+  font-size: 0.95rem;
+  text-align: center;
+  padding: 2rem 1.5rem;
+  font-style: italic;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 10px;
+  border: 1px dashed rgba(139, 92, 246, 0.2);
+}
+
+/* ========== Tablet Styles (768px) ========== */
 @media (max-width: 768px) {
   .container {
-    width: 100%;
-    padding: 0.75rem;
-    height: auto;
-    min-height: 100vh;
-  }
-
-  .backLink {
-    font-size: 0.85rem;
-    margin-bottom: 0.75rem;
-    padding: 0.55rem 1rem;
-    border-radius: 20px;
+    padding: 2rem 1.5rem;
   }
 
   .gameCard {
-    padding: 1.25rem;
-    border-radius: 15px;
-    border-width: 2px;
-    max-width: 100%;
+    padding: 2.5rem 2rem;
+    border-radius: 25px;
   }
 
   .header {
-    flex-direction: column;
-    gap: 0.6rem;
-    margin-bottom: 1.2rem;
-    padding-bottom: 0.9rem;
-    border-bottom-width: 2px;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
   }
 
   .title {
-    font-size: 1.4rem;
-    line-height: 1.3;
+    font-size: 2rem;
   }
 
   .level {
-    padding: 0.4rem 0.8rem;
-    font-size: 0.8rem;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.85rem;
+  }
+
+  .content {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .section {
+    padding: 1.5rem;
+  }
+
+  .section:nth-child(3) {
+    grid-column: 1;
+  }
+
+  .sectionTitle {
+    font-size: 1.1rem;
+  }
+
+  .actionButtons {
+    gap: 1rem;
+  }
+
+  .actionButton {
+    padding: 0.9rem 2rem;
+    font-size: 0.95rem;
+  }
+
+  .requestItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .requestAction {
+    width: 100%;
+  }
+
+  .approveButton,
+  .rejectButton {
+    flex: 1;
+  }
+
+  .commentForm {
+    padding: 1.2rem;
+  }
+
+  .commentInput {
+    min-height: 90px;
+    padding: 0.8rem;
+  }
+
+  .commentItem {
+    padding: 1rem;
+    gap: 0.8rem;
+  }
+
+  .commentMeta {
+    gap: 0.5rem;
+  }
+
+  .meetingPointContainer {
+    flex-direction: column-reverse;
+    gap: 1.5rem;
+  }
+
+  .meetingPointImage {
+    flex: 0 0 auto;
+    height: 250px;
+  }
+}
+
+/* ========== Mobile Styles (480px) ========== */
+@media (max-width: 480px) {
+  .container {
+    padding: 1rem 0.75rem;
+    min-height: auto;
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .backLink {
+    width: calc(100% - 1.2rem);
+    justify-content: center;
+    margin: 0 0.6rem 1.5rem 0.6rem;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+  }
+
+  .gameCard {
+    padding: 1.5rem 1rem;
+    border-radius: 20px;
+    max-width: calc(100% - 2rem);
+    border: 2px solid #ffd166;
+    margin: 0 1rem;
+    width: auto;
+  }
+
+  .header {
+    flex-direction: column-reverse;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+  }
+
+  .title {
+    font-size: 1.8rem;
+    text-align: right;
+  }
+
+  .level {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.3px;
     align-self: flex-start;
   }
 
   .content {
     grid-template-columns: 1fr;
-    gap: 1.2rem;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    max-height: none;
     overflow-y: visible;
-    padding-right: 0;
   }
 
   .section {
-    margin-bottom: 0;
-    padding: 1.2rem;
-    border-radius: 12px;
+    padding: 1.2rem 1rem;
+    border-radius: 15px;
+    border: 1px solid rgba(255, 209, 102, 0.4);
+    width: 100%;
+    box-sizing: border-box;
   }
 
-  .section:nth-child(3) {
-    grid-column: auto;
+  .section:hover {
+    transform: translateY(0);
   }
 
   .sectionTitle {
     font-size: 1rem;
-    margin-bottom: 0.7rem;
+    margin-bottom: 0.8rem;
   }
 
   .detail {
-    font-size: 0.9rem;
-    margin: 0.3rem 0;
-  }
-
-  .playersList {
-    margin-top: 1rem;
-    padding: 1rem;
-  }
-
-  .playersListTitle {
     font-size: 0.95rem;
-    margin-bottom: 0.7rem;
+    margin: 0.4rem 0;
+    line-height: 1.6;
+    word-break: break-word;
   }
 
   .playerItem {
-    padding: 0.65rem;
+    padding: 0.7rem 0.8rem;
+    gap: 0.8rem;
     font-size: 0.9rem;
-    gap: 0.6rem;
   }
 
-  .playerPhone {
+  .playerNumber {
+    min-width: 1.8rem;
+    font-size: 0.8rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .playerInfo {
+    gap: 0.15rem;
     font-size: 0.85rem;
   }
 
-  .progressBar {
-    height: 8px;
+  .actionButtons {
+    flex-direction: column;
+    gap: 0.8rem;
+    padding-top: 1rem;
   }
 
-  .meetingPoint {
+  .actionButton {
+    flex: none;
+    width: 100%;
+    padding: 0.85rem 1.5rem;
     font-size: 0.9rem;
-    padding: 0.5rem;
-    margin-top: 0.5rem;
+    min-height: 44px;
+  }
+
+  .pendingRequests {
+    padding: 1.2rem 1rem;
+    border-radius: 15px;
+  }
+
+  .pendingRequestsTitle {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+
+  .requestItem {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem 0.8rem;
+    gap: 0.8rem;
+  }
+
+  .requestAction {
+    width: 100%;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .approveButton,
+  .rejectButton {
+    width: 100%;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.85rem;
+    min-height: 44px;
+  }
+
+  .approveButton:hover,
+  .rejectButton:hover {
+    transform: translateY(-1px);
+  }
+
+  .commentsSection {
+    padding: 1.2rem 1rem;
+    border-radius: 15px;
+  }
+
+  .commentForm {
+    padding: 1rem 0.8rem;
+    gap: 0.8rem;
+  }
+
+  .commentInput {
+    padding: 0.8rem 0.7rem;
+    min-height: 80px;
+    font-size: 0.95rem;
+  }
+
+  .submitCommentBtn {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.9rem;
+    min-height: 44px;
+  }
+
+  .loginPrompt {
+    padding: 1rem 0.8rem;
+    font-size: 0.9rem;
+    border-left-width: 3px;
+  }
+
+  .commentsList {
+    gap: 0.8rem;
+  }
+
+  .commentItem {
+    padding: 1rem 0.8rem;
+    border-radius: 10px;
+    border: 1px solid rgba(139, 92, 246, 0.15);
+  }
+
+  .commentItem:hover {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  }
+
+  .commentMeta {
+    flex-direction: column;
+    gap: 0.3rem;
+    font-size: 0.8rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .commentAuthor {
+    font-size: 0.85rem;
+  }
+
+  .commentTime {
+    font-size: 0.8rem;
+  }
+
+  .commentText {
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .commentContent {
+    gap: 0.4rem;
+  }
+
+  .deleteCommentBtn {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    min-height: 36px;
+    width: 100%;
+  }
+
+  .noComments {
+    padding: 1.5rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .noRequests {
+    font-size: 0.9rem;
+    padding: 0.8rem;
   }
 
   .meetingPointContainer {
-    flex-direction: column;
+    flex-direction: column-reverse;
     gap: 1rem;
   }
 
   .meetingPointImage {
     flex: 0 0 auto;
+    height: 200px;
     width: 100%;
-    height: 180px;
-    border-radius: 10px;
-  }
-
-  .pendingRequestsSection {
-    margin-top: 1rem;
-  }
-
-  .pendingTitle {
-    font-size: 1rem;
-    margin-bottom: 0.8rem;
-  }
-
-  .pendingItem {
-    flex-direction: column;
-    gap: 0.75rem;
-    align-items: flex-start;
-    padding: 1rem;
-    border-radius: 10px;
-  }
-
-  .pendingActions {
-    width: 100%;
-    gap: 0.6rem;
-    justify-content: flex-start;
-  }
-
-  .approveBtn,
-  .rejectBtn {
-    padding: 0.6rem 1rem;
-    font-size: 0.9rem;
-    min-width: 80px;
-    border-radius: 6px;
-    flex: 1;
-  }
-
-  .pendingBtn {
-    font-size: 0.9rem;
-  }
-
-  .actions {
-    flex-direction: column;
-    gap: 0.7rem;
-    margin-top: 1rem;
-  }
-
-  .joinBtn,
-  .fullBtn,
-  .cancelBtn,
-  .deleteBtn {
-    padding: 0.75rem 1.25rem;
-    font-size: 0.95rem;
-    border-radius: 8px;
-    width: 100%;
-  }
-
-  .joinBtn:hover,
-  .fullBtn:hover,
-  .cancelBtn:hover {
-    transform: none;
-  }
-}
-
-@media (max-width: 480px) {
-  .container {
-    padding: 0.5rem;
-    height: auto;
-    min-height: 100vh;
-    width: 100%;
-  }
-
-  .backLink {
-    font-size: 0.8rem;
-    margin-bottom: 0.75rem;
-    padding: 0.5rem 0.9rem;
-    border-radius: 20px;
-  }
-
-  .backLink:hover {
-    transform: none;
-  }
-
-  .gameCard {
-    padding: 1rem;
-    border-radius: 12px;
-    border-width: 2px;
-    max-width: 100%;
-    margin: 0;
-  }
-
-  .header {
-    flex-direction: column;
-    gap: 0.6rem;
-    margin-bottom: 1rem;
-    padding-bottom: 0.75rem;
-    border-bottom-width: 2px;
-  }
-
-  .title {
-    font-size: 1.3rem;
-    line-height: 1.3;
-    word-break: break-word;
-  }
-
-  .level {
-    padding: 0.35rem 0.7rem;
-    font-size: 0.75rem;
-    border-radius: 4px;
-    align-self: flex-start;
-  }
-
-  .content {
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
-    margin-bottom: 1rem;
-    overflow-y: visible;
-    padding-right: 0;
-  }
-
-  .section {
-    margin-bottom: 0;
-    padding: 0.9rem;
-    border-radius: 10px;
-    border-left-width: 3px;
-  }
-
-  .section:nth-child(3) {
-    grid-column: auto;
-  }
-
-  .sectionTitle {
-    font-size: 0.95rem;
-    margin-bottom: 0.6rem;
-    font-weight: 600;
-  }
-
-  .detail {
-    font-size: 0.9rem;
-    line-height: 1.5;
-    margin: 0.4rem 0;
-  }
-
-  .playersList {
-    margin-top: 0.75rem;
-    padding: 0.75rem;
-    border-radius: 8px;
-  }
-
-  .playersListTitle {
-    font-size: 0.9rem;
-    margin-bottom: 0.6rem;
-  }
-
-  .playerListItems {
-    gap: 0.5rem;
-  }
-
-  .players {
-    gap: 0.5rem;
-  }
-
-  .playerItem {
-    padding: 0.5rem;
-    font-size: 0.85rem;
-    gap: 0.5rem;
-    border-radius: 6px;
-  }
-
-  .playerNumber {
-    min-width: 1.2rem;
-    font-size: 0.85rem;
-  }
-
-  .playerInfo {
-    gap: 0.2rem;
-  }
-
-  .playerName {
-    font-size: 0.9rem;
-  }
-
-  .playerPhone {
-    font-size: 0.8rem;
-  }
-
-  .organizerBadge {
-    font-size: 0.7rem;
-    padding: 0.2rem 0.5rem;
-    white-space: nowrap;
-  }
-
-  .progressBar {
-    height: 8px;
-    border-radius: 10px;
-  }
-
-  .meetingPoint {
-    font-size: 0.85rem;
-    padding: 0.4rem;
-    margin-top: 0.4rem;
-    margin-right: 0;
-    border-left-width: 3px;
-    border-right: none;
-  }
-
-  .meetingPointContainer {
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .meetingPointImage {
-    width: 100%;
-    height: 120px;
-    border-radius: 8px;
-  }
-
-  .imagePlaceholder {
-    font-size: 2rem;
-  }
-
-  .pendingRequestsSection {
-    margin-top: 0.75rem;
-  }
-
-  .pendingTitle {
-    font-size: 0.95rem;
-    margin-bottom: 0.6rem;
-  }
-
-  .pendingItem {
-    padding: 0.75rem;
-    gap: 0.5rem;
-    border-radius: 8px;
-  }
-
-  .pendingUser {
-    font-size: 0.85rem;
-  }
-
-  .pendingActions {
-    gap: 0.4rem;
-    width: 100%;
-  }
-
-  .approveBtn,
-  .rejectBtn {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.8rem;
-    min-width: auto;
-    flex: 1;
-    border-radius: 6px;
-  }
-
-  .actions {
-    gap: 0.5rem;
-    margin-top: 0.75rem;
-    flex-wrap: wrap;
-  }
-
-  .joinBtn,
-  .fullBtn,
-  .cancelBtn,
-  .pendingBtn,
-  .deleteBtn {
-    padding: 0.65rem 1rem;
-    font-size: 0.85rem;
-    border-radius: 8px;
-    flex: 1;
-    min-width: 100px;
-  }
-
-  .joinBtn:disabled,
-  .fullBtn:disabled {
-    opacity: 0.6;
   }
 }

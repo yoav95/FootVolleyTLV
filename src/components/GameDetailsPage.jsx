@@ -1,6 +1,6 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useContext } from 'react';
-import { getGameById, requestToJoinGame, leaveGame, approveJoinRequest, rejectJoinRequest, deleteGame } from '../firebase/gameService';
+import { getGameById, requestToJoinGame, leaveGame, approveJoinRequest, rejectJoinRequest, deleteGame, addCommentToGame, deleteCommentFromGame } from '../firebase/gameService';
 import { getUserProfile } from '../firebase/authService';
 import { AuthContext } from '../App';
 import styles from './GameDetailsPage.module.css';
@@ -10,6 +10,8 @@ function GameDetailsPage() {
   const navigate = useNavigate();
   const { currentUser } = useContext(AuthContext);
   const [game, setGame] = useState(null);
+  const [commentText, setCommentText] = useState('');
+  const [commentLoading, setCommentLoading] = useState(false);
   const [address, setAddress] = useState('Loading...');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -145,13 +147,12 @@ function GameDetailsPage() {
       await leaveGame(gameId, currentUser.uid);
       const updatedGame = await getGameById(gameId);
       setGame(updatedGame);
+      alert('עזבת את המשחק');
     } catch (err) {
       setError(err.message);
     } finally {
       setActionLoading(false);
     }
-    // In a real app, this would save to a database
-    alert(`הצטרפת למשחק!`);
   };
 
   const handleApproveRequest = async (userId) => {
@@ -194,6 +195,47 @@ function GameDetailsPage() {
     } catch (err) {
       setError(err.message);
       setActionLoading(false);
+    }
+  };
+
+  const handleAddComment = async (e) => {
+    e.preventDefault();
+    if (!currentUser) {
+      navigate('/login');
+      return;
+    }
+
+    if (!commentText.trim()) {
+      setError('הערה לא יכולה להיות ריקה');
+      return;
+    }
+
+    setCommentLoading(true);
+    try {
+      const userName = userProfiles[currentUser.uid]?.name || currentUser.displayName || 'משתמש';
+      await addCommentToGame(gameId, currentUser.uid, userName, commentText);
+      const updatedGame = await getGameById(gameId);
+      setGame(updatedGame);
+      setCommentText('');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setCommentLoading(false);
+    }
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    if (!currentUser) return;
+
+    setCommentLoading(true);
+    try {
+      await deleteCommentFromGame(gameId, commentId, currentUser.uid);
+      const updatedGame = await getGameById(gameId);
+      setGame(updatedGame);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setCommentLoading(false);
     }
   };
 
@@ -319,6 +361,74 @@ function GameDetailsPage() {
               <p className={styles.detail}>{game.notes}</p>
             </div>
           )}
+
+          {/* Comments Section */}
+          <div className={styles.section}>
+            <h3 className={styles.sectionTitle}>💬 הערות ({(game.comments || []).length})</h3>
+            
+            {/* Add Comment Form */}
+            {currentUser && (
+              <form onSubmit={handleAddComment} className={styles.commentForm}>
+                <textarea
+                  value={commentText}
+                  onChange={(e) => setCommentText(e.target.value)}
+                  placeholder="הוסף הערה..."
+                  className={styles.commentInput}
+                  rows="3"
+                  disabled={commentLoading}
+                />
+                <button
+                  type="submit"
+                  className={styles.submitCommentBtn}
+                  disabled={commentLoading || !commentText.trim()}
+                >
+                  {commentLoading ? 'שולח...' : 'שלח הערה'}
+                </button>
+              </form>
+            )}
+
+            {!currentUser && (
+              <div className={styles.loginPrompt}>
+                <p>עליך להתחבר כדי להוסיף הערה</p>
+                <button onClick={() => navigate('/login')} className={styles.loginBtn}>
+                  התחברות
+                </button>
+              </div>
+            )}
+
+            {/* Comments List */}
+            <div className={styles.commentsList}>
+              {game.comments && game.comments.length > 0 ? (
+                game.comments.map((comment) => (
+                  <div key={comment.id} className={styles.commentItem}>
+                    <div className={styles.commentHeader}>
+                      <span className={styles.commentName}>{comment.userName}</span>
+                      <span className={styles.commentTime}>
+                        {new Date(comment.createdAt?.toDate?.() || comment.createdAt).toLocaleDateString('he-IL', {
+                          month: 'short',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </span>
+                    </div>
+                    <p className={styles.commentText}>{comment.text}</p>
+                    {(currentUser?.uid === comment.userId || isOrganizer) && (
+                      <button
+                        onClick={() => handleDeleteComment(comment.id)}
+                        className={styles.deleteCommentBtn}
+                        disabled={commentLoading}
+                      >
+                        🗑️ מחק
+                      </button>
+                    )}
+                  </div>
+                ))
+              ) : (
+                <p className={styles.noComments}>אין הערות עדיין. היה הראשון להוסיף הערה!</p>
+              )}
+            </div>
+          </div>
         </div>
 
         <div className={styles.actions}>

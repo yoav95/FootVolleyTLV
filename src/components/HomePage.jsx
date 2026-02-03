@@ -5,6 +5,7 @@ import { GiSoccerBall } from 'react-icons/gi';
 import { getAllGames, getOrganizerPendingRequests } from '../firebase/gameService';
 import { AuthContext } from '../App';
 import styles from './HomePage.module.css';
+import geoJsonPolygons from '../data/geojsonPolygons.json';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
@@ -52,7 +53,56 @@ function getLevelColor(level) {
   return colorMap[numericLevel] || '#00b4d8';
 }
 
-// Game Marker Component with soccer ball icon
+// Component to add labels to GeoJSON features
+function GeoJSONWithLabels({ data }) {
+  return (
+    <GeoJSON 
+      data={data}
+      style={{
+        color: '#00b4d8',
+        weight: 2,
+        opacity: 0.6,
+        fillOpacity: 0.08,
+        fillColor: '#00b4d8'
+      }}
+      onEachFeature={(feature, layer) => {
+        const { name, nets } = feature.properties;
+        
+        // Create simple popup
+        const popupContent = `
+          <div style="text-align: right; direction: rtl; font-family: Arial, sans-serif;">
+            <div style="font-weight: bold; font-size: 13px; color: #00b4d8; margin-bottom: 4px;">
+              ${name}
+            </div>
+            <div style="font-size: 12px; color: #666;">
+              🥅 רשתות: ${nets}
+            </div>
+          </div>
+        `;
+        layer.bindPopup(popupContent);
+        
+        // Add hover effects
+        layer.on('mouseover', function() {
+          this.setStyle({ 
+            weight: 3, 
+            opacity: 0.8,
+            fillOpacity: 0.12,
+            color: '#0096c7'
+          });
+          this.bringToFront();
+        });
+        layer.on('mouseout', function() {
+          this.setStyle({ 
+            weight: 2, 
+            opacity: 0.6,
+            fillOpacity: 0.08,
+            color: '#00b4d8'
+          });
+        });
+      }}
+    />
+  );
+}
 function GameMarker({ game, navigate }) {
   const color = getLevelColor(game.level);
 
@@ -161,6 +211,12 @@ function HomePage() {
   const [showDialog, setShowDialog] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
   const [pendingRequests, setPendingRequests] = useState([]);
+  const [weather, setWeather] = useState({
+    temp: '--',
+    description: '--',
+    icon: '🌤️',
+    loading: true
+  });
   const { currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -238,6 +294,58 @@ function HomePage() {
 
     fetchUserProfile();
   }, [currentUser]);
+
+  // Fetch weather for Tel Aviv
+  useEffect(() => {
+    const fetchWeather = async () => {
+      try {
+        // Tel Aviv coordinates
+        const lat = 32.0853;
+        const lon = 34.7818;
+        
+        const response = await fetch(
+          `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,relative_humidity_2m&temperature_unit=celsius&timezone=auto`
+        );
+        const data = await response.json();
+        
+        if (data.current) {
+          const temp = Math.round(data.current.temperature_2m);
+          const code = data.current.weather_code;
+          
+          // Map WMO weather codes to icons and descriptions
+          const getWeatherInfo = (code) => {
+            if (code === 0 || code === 1) return { icon: '☀️', desc: 'שמש' };
+            if (code === 2 || code === 3) return { icon: '⛅', desc: 'עננים חלקיים' };
+            if (code === 45 || code === 48) return { icon: '🌫️', desc: 'ערפל' };
+            if (code === 51 || code === 53 || code === 55) return { icon: '🌧️', desc: 'גשם קל' };
+            if (code === 61 || code === 63 || code === 65) return { icon: '⛈️', desc: 'גשם' };
+            if (code === 71 || code === 73 || code === 75) return { icon: '❄️', desc: 'שלג' };
+            if (code === 77) return { icon: '❄️', desc: 'כדורי שלג' };
+            if (code === 80 || code === 81 || code === 82) return { icon: '🌧️', desc: 'זלפות' };
+            if (code === 85 || code === 86) return { icon: '❄️', desc: 'שלג' };
+            if (code === 95 || code === 96 || code === 99) return { icon: '⛈️', desc: 'רעם וברק' };
+            return { icon: '🌤️', desc: 'חדות' };
+          };
+          
+          const weatherInfo = getWeatherInfo(code);
+          setWeather({
+            temp: `${temp}°C`,
+            description: weatherInfo.desc,
+            icon: weatherInfo.icon,
+            loading: false
+          });
+        }
+      } catch (err) {
+        console.error('Error fetching weather:', err);
+        setWeather(prev => ({ ...prev, loading: false }));
+      }
+    };
+    
+    fetchWeather();
+    // Update weather every 30 minutes
+    const interval = setInterval(fetchWeather, 30 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -426,10 +534,10 @@ function HomePage() {
 
         {/* Weather Widget - Bottom Right */}
         <div className={styles.weatherWidget}>
-          <span className={styles.weatherIcon}>🌤️</span>
+          <span className={styles.weatherIcon}>{weather.icon}</span>
           <div className={styles.weatherInfo}>
-            <p className={styles.weatherTemp}>28°C</p>
-            <p className={styles.weatherDesc}>שמש</p>
+            <p className={styles.weatherTemp}>{weather.temp}</p>
+            <p className={styles.weatherDesc}>{weather.description}</p>
           </div>
         </div>
       </div>
