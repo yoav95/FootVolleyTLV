@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useState, useEffect, lazy, Suspense } from 'react';
 import { onAuthChange, getUserProfile } from './firebase/authService';
 import { getOrganizerPendingRequests } from './firebase/gameService';
@@ -6,6 +6,7 @@ import { AuthContext } from './contexts/AuthContext';
 import { PageLoadingSkeleton } from './components/LoadingSkeleton';
 import PhonePromptModal from './components/PhonePromptModal';
 import JoinRequestModal from './components/JoinRequestModal';
+import ProtectedRoute from './components/ProtectedRoute';
 import styles from './App.module.css';
 
 // Lazy load pages for better performance
@@ -124,12 +125,56 @@ function App() {
 
           <Suspense fallback={<PageLoadingSkeleton />}>
             <Routes>
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/notifications" element={<NotificationsPage />} />
-              <Route path="/" element={<HomePage pendingRequests={pendingRequests} />} />
-              <Route path="/create-game" element={<GameCreationPage />} />
-              <Route path="/game/:gameId" element={<GameDetailsPage />} />
+              <Route 
+                path="/login" 
+                element={currentUser ? <Navigate to="/" replace /> : <LoginPage />} 
+              />
+              <Route 
+                path="/" 
+                element={
+                  <ProtectedRoute 
+                    currentUser={currentUser} 
+                    element={<HomePage pendingRequests={pendingRequests} />} 
+                  />
+                } 
+              />
+              <Route 
+                path="/create-game" 
+                element={
+                  <ProtectedRoute 
+                    currentUser={currentUser} 
+                    element={<GameCreationPage />} 
+                  />
+                } 
+              />
+              <Route 
+                path="/game/:gameId" 
+                element={
+                  <ProtectedRoute 
+                    currentUser={currentUser} 
+                    element={<GameDetailsPage />} 
+                  />
+                } 
+              />
+              <Route 
+                path="/profile" 
+                element={
+                  <ProtectedRoute 
+                    currentUser={currentUser} 
+                    element={<ProfilePage />} 
+                  />
+                } 
+              />
+              <Route 
+                path="/notifications" 
+                element={
+                  <ProtectedRoute 
+                    currentUser={currentUser} 
+                    element={<NotificationsPage />} 
+                  />
+                } 
+              />
+              <Route path="*" element={<Navigate to={currentUser ? "/" : "/login"} replace />} />
             </Routes>
           </Suspense>
         </div>

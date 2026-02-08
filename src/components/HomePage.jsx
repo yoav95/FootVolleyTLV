@@ -455,21 +455,27 @@ function HomePage({ pendingRequests: initialPendingRequests = [] }) {
 
         {selectedLocation && showDialog && (
           <div 
-            className={styles.overlayPopup}
-            style={{
-              left: `${popupPosition.x}px`,
-              top: `${popupPosition.y}px`
-            }}
+            className={styles.dialogOverlay}
+            onClick={handleCancel}
           >
-            <div className={styles.popupContent}>
-              <h3>ליצור משחק חדש?</h3>
-              <div className={styles.popupActions}>
-                <button onClick={handleCreateGame} className={styles.popupConfirmBtn}>
-                  ✓ יצירה
-                </button>
-                <button onClick={handleCancel} className={styles.popupCancelBtn}>
-                  ✗ ביטול
-                </button>
+            <div 
+              className={styles.overlayPopup}
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                left: `${popupPosition.x}px`,
+                top: `${popupPosition.y}px`
+              }}
+            >
+              <div className={styles.popupContent}>
+                <h3>ליצור משחק חדש?</h3>
+                <div className={styles.popupActions}>
+                  <button onClick={handleCreateGame} className={styles.popupConfirmBtn}>
+                    ✓ יצירה
+                  </button>
+                  <button onClick={handleCancel} className={styles.popupCancelBtn}>
+                    ✗ ביטול
+                  </button>
+                </div>
               </div>
             </div>
           </div>

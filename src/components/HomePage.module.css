@@ -146,6 +146,17 @@
   pointer-events: none;
 }
 
+.dialogOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: transparent;
+  z-index: 499;
+  pointer-events: none;
+}
+
 /* White, slightly transparent popup */
 .popupContent {
   background: rgba(255, 255, 255, 0.46);
@@ -254,6 +265,83 @@
 
 .selectedLocation button:hover {
   background: #5155d9;
+}
+
+/* Desktop styles for popup */
+@media (min-width: 769px) {
+  .overlayPopup {
+    position: absolute !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 500 !important;
+    pointer-events: none !important;
+  }
+
+  .popupContent {
+    padding: 3rem 2.5rem !important;
+    min-width: 220px !important;
+    min-height: 190px !important;
+    width: auto !important;
+    max-width: none !important;
+    background: rgba(255, 255, 255, 0.46) !important;
+    border: 2px solid #646cff !important;
+    border-radius: 1rem !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18) !important;
+    color: #1a1a1a !important;
+  }
+
+  .popupContent h3 {
+    font-size: 1.5rem !important;
+    color: #646cff !important;
+    margin: 0 0 3rem 0 !important;
+  }
+
+  .popupActions {
+    gap: 0.5rem !important;
+    flex-direction: row-reverse !important;
+  }
+
+  .popupConfirmBtn,
+  .popupCancelBtn {
+    width: auto !important;
+    padding: 0.8rem 1.5rem !important;
+    font-size: 1rem !important;
+    border-radius: 25px !important;
+    min-width: 120px !important;
+  }
+
+  .popupConfirmBtn {
+    background: linear-gradient(135deg, #00b4d8 0%, #0096c7 100%) !important;
+    color: white !important;
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(0, 180, 216, 0.3) !important;
+  }
+
+  .popupConfirmBtn:hover {
+    background: linear-gradient(135deg, #0096c7 0%, #0077b6 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 16px rgba(0, 180, 216, 0.4) !important;
+  }
+
+  .popupConfirmBtn:active {
+    transform: translateY(0) !important;
+  }
+
+  .popupCancelBtn {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%) !important;
+    color: white !important;
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3) !important;
+  }
+
+  .popupCancelBtn:hover {
+    background: linear-gradient(135deg, #ee5a6f 0%, #f06595 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 16px rgba(255, 107, 107, 0.4) !important;
+  }
+
+  .popupCancelBtn:active {
+    transform: translateY(0) !important;
+  }
 }
 
 .confirmationDialog {
@@ -605,20 +693,34 @@
     border-radius: 4px;
   }
 
+  /* Mobile: keep absolute positioning at click location, just improve styling */
+  .overlayPopup {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    z-index: 500;
+    pointer-events: none;
+  }
+
   .popupContent {
     padding: 1.5rem 1rem;
     min-width: 180px;
-    min-height: 150px;
+    background: linear-gradient(135deg, #ffffff 0%, #fff8e7 100%);
+    border: 2px solid #00b4d8;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+    pointer-events: all;
   }
 
   .popupContent h3 {
-    font-size: 1.2rem;
-    margin: 0 0 1.5rem 0;
+    font-size: 1.1rem;
+    margin: 0 0 1rem 0;
+    color: #00b4d8;
+    font-weight: 700;
   }
 
   .popupActions {
     flex-direction: column;
-    gap: 0.8rem;
+    gap: 0.75rem;
     width: 100%;
   }
 
@@ -626,6 +728,23 @@
   .popupCancelBtn {
     min-width: unset;
     width: 100%;
+    padding: 0.75rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 10px;
+    border: none;
+  }
+
+  .popupConfirmBtn {
+    background: linear-gradient(135deg, #00b4d8 0%, #0096c7 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 180, 216, 0.4);
+  }
+
+  .popupCancelBtn {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
   }
 
   .weatherWidget {
@@ -675,14 +794,58 @@
     font-size: 0.75rem;
   }
 
+  /* Mobile: keep absolute positioning at click location */
+  .overlayPopup {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    z-index: 500;
+    pointer-events: none;
+  }
+
   .popupContent {
-    padding: 1rem;
-    min-width: 150px;
+    padding: 1.25rem 1rem;
+    min-width: 160px;
+    max-width: 220px;
+    background: linear-gradient(135deg, #ffffff 0%, #fff8e7 100%);
+    border: 2px solid #00b4d8;
+    border-radius: 14px;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3);
+    pointer-events: all;
+  }
+
+  .popupContent h3 {
+    font-size: 1rem;
+    margin: 0 0 0.75rem 0;
+    color: #00b4d8;
+    font-weight: 700;
+  }
+
+  .popupActions {
+    flex-direction: column;
+    gap: 0.6rem;
+    width: 100%;
   }
 
   .popupConfirmBtn,
   .popupCancelBtn {
-    padding: 0.6rem 1rem;
+    padding: 0.65rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 8px;
+    width: 100%;
+    border: none;
+  }
+
+  .popupConfirmBtn {
+    background: linear-gradient(135deg, #00b4d8 0%, #0096c7 100%);
+    color: white;
+    box-shadow: 0 3px 10px rgba(0, 180, 216, 0.4);
+  }
+
+  .popupCancelBtn {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+    color: white;
+    box-shadow: 0 3px 10px rgba(255, 107, 107, 0.4);
   }
 
   .weatherWidget {

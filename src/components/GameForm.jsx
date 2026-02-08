@@ -2,6 +2,7 @@ import { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { createGame, getUserActiveGame } from '../firebase/gameService';
 import { getUserProfile } from '../firebase/authService';
+import { compressImage } from '../utils/imageCompression';
 import styles from './GameForm.module.css';
 
 // Get current date and time in required formats
@@ -173,15 +174,20 @@ function GameForm({ location, onSuccess, onCancel }) {
     return selectedDateTime >= now;
   };
 
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      setFormData(prev => ({ ...prev, image: file }));
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
+      try {
+        setError('');
+        // Compress image
+        const compressedBase64 = await compressImage(file);
+        setFormData(prev => ({ ...prev, image: compressedBase64 }));
+        setImagePreview(compressedBase64);
+      } catch (err) {
+        setError(err.message);
+        // Reset file input
+        e.target.value = '';
+      }
     }
   };
 
@@ -214,7 +220,14 @@ function GameForm({ location, onSuccess, onCancel }) {
 
     try {
       const gameData = {
-        ...formData,
+        title: formData.title,
+        date: formData.date,
+        time: formData.time,
+        playersNeeded: formData.playersNeeded,
+        level: formData.level,
+        notes: formData.notes,
+        meetingPointText: formData.meetingPointText,
+        image: formData.image || null, // Compressed base64 image or null
         coordinates: location,
         players: [currentUser.uid],
         createdAt: new Date(),

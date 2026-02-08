@@ -374,8 +374,8 @@ function GameDetailsPage() {
                 )}
               </div>
               <div className={styles.meetingPointImage}>
-                {game.meetingPointImage ? (
-                  <img src={game.meetingPointImage} alt="נקודת מפגש" />
+                {game.image ? (
+                  <img src={game.image} alt="תמונת המשחק" />
                 ) : (
                   <div className={styles.imagePlaceholder}>📸 אין תמונה</div>
                 )}
