@@ -1,20 +1,84 @@
 import { useState, useContext, useEffect } from 'react';
-import { AuthContext } from '../App';
+import { AuthContext } from '../contexts/AuthContext';
 import { createGame, getUserActiveGame } from '../firebase/gameService';
 import { getUserProfile } from '../firebase/authService';
 import styles from './GameForm.module.css';
+
+// Get current date and time in required formats
+const getCurrentDate = () => {
+  const today = new Date();
+  return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+};
+
+const getCurrentTime = () => {
+  const now = new Date();
+  // Round to next 30 minutes
+  const minutes = now.getMinutes();
+  const roundedMinutes = minutes < 30 ? 30 : 0;
+  if (roundedMinutes === 0) {
+    now.setHours(now.getHours() + 1);
+  }
+  now.setMinutes(roundedMinutes);
+  return now.toTimeString().slice(0, 5);
+};
+
+// Get today's date as YYYY-MM-DD string
+const getTodayString = () => {
+  const today = new Date();
+  return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+};
+
+// Format date for display
+const formatDateDisplay = (dateString) => {
+  const [year, month, day] = dateString.split('-').map(Number);
+  const selectedDate = new Date(year, month - 1, day);
+  
+  const today = new Date();
+  const todayString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+  
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const tomorrowString = `${tomorrow.getFullYear()}-${String(tomorrow.getMonth() + 1).padStart(2, '0')}-${String(tomorrow.getDate()).padStart(2, '0')}`;
+  
+  if (dateString === todayString) return 'היום';
+  if (dateString === tomorrowString) return 'מחר';
+  
+  return selectedDate.toLocaleDateString('he-IL', { weekday: 'short', month: 'short', day: 'numeric' });
+};
+
+// Format time for display
+const formatTimeDisplay = (timeString) => {
+  return timeString.slice(0, 5);
+};
+
+// Get color based on level
+function getLevelColor(level) {
+  const numericLevel = parseInt(level);
+  const colorMap = {
+    1: '#ec4899',  // Pink
+    2: '#e879f9',  // Pink-Purple
+    3: '#c084fc',  // Purple
+    4: '#a78bfa',  // Purple-Blue (Middle)
+    5: '#818cf8',  // Blue-Purple
+    6: '#60a5fa',  // Light Blue
+    7: '#3b82f6'   // Deep Blue
+  };
+  return colorMap[numericLevel] || '#a78bfa';
+}
 
 function GameForm({ location, onSuccess, onCancel }) {
   const { currentUser } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     title: '',
-    date: '',
-    time: '',
+    date: getCurrentDate(),
+    time: getCurrentTime(),
     playersNeeded: 4,
-    level: '2',
+    level: '4',
     notes: '',
-    meetingPointText: ''
+    meetingPointText: '',
+    image: null
   });
+  const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [userProfile, setUserProfile] = useState(null);
@@ -60,6 +124,72 @@ function GameForm({ location, onSuccess, onCancel }) {
     }));
   };
 
+  const adjustDate = (days) => {
+    const [year, month, day] = formData.date.split('-').map(Number);
+    const currentDate = new Date(year, month - 1, day);
+    currentDate.setDate(currentDate.getDate() + days);
+    
+    const newDate = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`;
+    const today = getTodayString();
+    
+    // Only allow dates today or in the future
+    if (newDate >= today) {
+      setFormData(prev => ({ ...prev, date: newDate }));
+    }
+  };
+
+  const adjustTime = (minutes) => {
+    const [hours, mins] = formData.time.split(':').map(Number);
+    let date = new Date();
+    date.setHours(hours, mins + minutes);
+    const newTime = date.toTimeString().slice(0, 5);
+    
+    // Only allow times that haven't passed yet (if today is selected)
+    const today = getTodayString();
+    if (formData.date === today) {
+      const now = new Date();
+      const [newHours, newMins] = newTime.split(':').map(Number);
+      const selectedDateTime = new Date();
+      selectedDateTime.setHours(newHours, newMins, 0);
+      
+      if (selectedDateTime >= now) {
+        setFormData(prev => ({ ...prev, time: newTime }));
+      }
+    } else {
+      setFormData(prev => ({ ...prev, time: newTime }));
+    }
+  };
+
+  const canDecrementTime = () => {
+    const [hours, mins] = formData.time.split(':').map(Number);
+    const newHours = hours - 1;
+    
+    if (formData.date !== getTodayString()) return true;
+    
+    const now = new Date();
+    const selectedDateTime = new Date();
+    selectedDateTime.setHours(newHours, mins - 30);
+    
+    return selectedDateTime >= now;
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData(prev => ({ ...prev, image: file }));
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = () => {
+    setFormData(prev => ({ ...prev, image: null }));
+    setImagePreview(null);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!currentUser) {
@@ -94,13 +224,15 @@ function GameForm({ location, onSuccess, onCancel }) {
       await createGame(gameData, currentUser.uid);
       setFormData({
         title: '',
-        date: '',
-        time: '',
+        date: getCurrentDate(),
+        time: getCurrentTime(),
         playersNeeded: 4,
-        level: '2',
+        level: '4',
         notes: '',
-        meetingPointText: ''
+        meetingPointText: '',
+        image: null
       });
+      setImagePreview(null);
       if (onSuccess) onSuccess();
     } catch (err) {
       setError(err.message);
@@ -138,7 +270,7 @@ function GameForm({ location, onSuccess, onCancel }) {
       ) : (
         <>
       <div className={styles.formGroup}>
-        <label htmlFor="title" className={styles.label}>כותרת המשחק *</label>
+        <label htmlFor="title" className={styles.label}>⚽ כותרת המשחק *</label>
         <input
           type="text"
           id="title"
@@ -153,40 +285,29 @@ function GameForm({ location, onSuccess, onCancel }) {
         />
       </div>
 
-      <div className={styles.formRow}>
+      <div className={styles.dateTimeContainer}>
         <div className={styles.formGroup}>
-          <label htmlFor="date" className={styles.label}>תאריך *</label>
-          <input
-            type="date"
-            id="date"
-            name="date"
-            value={formData.date}
-            onChange={handleChange}
-            required
-            className={styles.input}
-            min={new Date().toISOString().split('T')[0]}
-            disabled={loading}
-          />
+          <label className={styles.label}>📅 תאריך</label>
+          <div className={styles.dateTimeControls}>
+            <button type="button" onClick={() => adjustDate(-1)} className={styles.dateBtn} disabled={loading || formData.date === getTodayString()}>→</button>
+            <div className={styles.dateDisplay}>{formatDateDisplay(formData.date)}</div>
+            <button type="button" onClick={() => adjustDate(1)} className={styles.dateBtn} disabled={loading}>←</button>
+          </div>
         </div>
 
         <div className={styles.formGroup}>
-          <label htmlFor="time" className={styles.label}>שעה *</label>
-          <input
-            type="time"
-            id="time"
-            name="time"
-            value={formData.time}
-            onChange={handleChange}
-            required
-            className={styles.input}
-            disabled={loading}
-          />
+          <label className={styles.label}>🕐 שעה</label>
+          <div className={styles.timeControls}>
+            <button type="button" onClick={() => adjustTime(-30)} className={styles.timeBtn} disabled={loading || !canDecrementTime()}>−</button>
+            <div className={styles.timeDisplay}>{formatTimeDisplay(formData.time)}</div>
+            <button type="button" onClick={() => adjustTime(30)} className={styles.timeBtn} disabled={loading}>+</button>
+          </div>
         </div>
       </div>
 
       <div className={styles.formRow}>
         <div className={styles.formGroup}>
-          <label htmlFor="playersNeeded" className={styles.label}>מספר שחקנים דרוש *</label>
+          <label htmlFor="playersNeeded" className={styles.label}>👥 מספר שחקנים דרוש *</label>
           <select
             id="playersNeeded"
             name="playersNeeded"
@@ -196,36 +317,41 @@ function GameForm({ location, onSuccess, onCancel }) {
             className={styles.select}
             disabled={loading}
           >
-            <option value="2">2</option>
             <option value="4">4</option>
             <option value="6">6</option>
             <option value="8">8</option>
             <option value="10">10</option>
           </select>
         </div>
+      </div>
 
-        <div className={styles.formGroup}>
-          <label htmlFor="level" className={styles.label}>רמה *</label>
-          <select
-            id="level"
-            name="level"
-            value={formData.level}
-            onChange={handleChange}
-            required
-            className={styles.select}
-            disabled={loading}
-          >
-            <option value="1">מתחיל</option>
-            <option value="2">בינוני</option>
-            <option value="3">מתקדם</option>
-            <option value="4">מתקדם מאוד</option>
-            <option value="5">מומחה</option>
-          </select>
+      <div className={styles.formGroup}>
+        <label className={styles.label}>🏆 רמה *</label>
+        <div className={styles.levelPickerContainer}>
+          {[1, 2, 3, 4, 5, 6, 7].map((level) => (
+            <button
+              key={level}
+              type="button"
+              onClick={() => setFormData(prev => ({ ...prev, level: level.toString() }))}
+              className={`${styles.levelButton} ${formData.level === level.toString() ? styles.levelButtonActive : ''}`}
+              style={{
+                backgroundColor: formData.level === level.toString() ? getLevelColor(level) : `${getLevelColor(level)}33`,
+                borderColor: getLevelColor(level),
+                color: formData.level === level.toString() ? '#fff' : '#666'
+              }}
+              disabled={loading}
+            >
+              <svg className={styles.levelFootballIcon} viewBox="0 0 24 24" fill="currentColor">
+                <image href="/football.svg" x="0" y="0" width="24" height="24" />
+              </svg>
+              <span className={styles.levelNumber}>{level}</span>
+            </button>
+          ))}
         </div>
       </div>
 
       <div className={styles.formGroup}>
-        <label htmlFor="meetingPointText" className={styles.label}>תיאור נקודת המפגש</label>
+        <label htmlFor="meetingPointText" className={styles.label}>📍 תיאור נקודת המפגש</label>
         <input
           type="text"
           id="meetingPointText"
@@ -239,17 +365,48 @@ function GameForm({ location, onSuccess, onCancel }) {
       </div>
 
       <div className={styles.formGroup}>
-        <label htmlFor="notes" className={styles.label}>הערות (אופציונלי)</label>
+        <label htmlFor="notes" className={styles.label}>📝 הערות (אופציונלי)</label>
         <textarea
           id="notes"
           name="notes"
           value={formData.notes}
           onChange={handleChange}
           className={styles.textarea}
-          placeholder="הוסף הערות נוספות"
+          placeholder="הוסף הערות נוספות על המשחק..."
           rows="3"
           disabled={loading}
         />
+      </div>
+
+      <div className={styles.formGroup}>
+        <label className={styles.label}>📸 תמונה של מקום המפגש (אופציונלי)</label>
+        <div className={styles.imageUploadContainer}>
+          <input
+            type="file"
+            id="image"
+            name="image"
+            accept="image/*"
+            onChange={handleImageChange}
+            className={styles.fileInput}
+            disabled={loading}
+          />
+          <label htmlFor="image" className={styles.fileInputLabel}>
+            {imagePreview ? '✓ שנה תמונה' : '📤 העלה תמונה של המשחק'}
+          </label>
+          {imagePreview && (
+            <div className={styles.imagePreviewContainer}>
+              <img src={imagePreview} alt="תצוגה מקדימה" className={styles.imagePreview} />
+              <button
+                type="button"
+                onClick={removeImage}
+                className={styles.removeImageBtn}
+                disabled={loading}
+              >
+                ✕ הסר תמונה
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {error && <div className={styles.error}>{error}</div>}
@@ -261,10 +418,10 @@ function GameForm({ location, onSuccess, onCancel }) {
           disabled={loading || !userProfile?.phone || activeGame || checkingGame}
           title={activeGame ? 'אתה כבר יצרת משחק' : !userProfile?.phone ? 'עליך להוסיף מספר טלפון לפני יצירת משחק' : ''}
         >
-          {loading ? 'יוצר משחק...' : 'יצור משחק'}
+          {loading ? '⏳ יוצר משחק...' : '✓ יצור משחק'}
         </button>
         <button type="button" onClick={onCancel} className={styles.cancelBtn} disabled={loading}>
-          ביטול
+          ✕ ביטול
         </button>
       </div>
         </>

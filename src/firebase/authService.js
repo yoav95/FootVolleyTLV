@@ -6,6 +6,12 @@ import {
   onAuthStateChanged
 } from 'firebase/auth';
 import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
+import whitelist from '../data/whitelist.json';
+
+// Check if email is whitelisted
+const isEmailWhitelisted = (email) => {
+  return whitelist.allowedEmails.includes(email);
+};
 
 // Sign in with Google
 export const signInWithGoogle = async () => {
@@ -13,6 +19,13 @@ export const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
     const userCredential = await signInWithPopup(auth, provider);
     const user = userCredential.user;
+
+    // Check if user's email is whitelisted
+    if (!isEmailWhitelisted(user.email)) {
+      // Sign out the user immediately
+      await signOut(auth);
+      throw new Error('האפליקציה עדיין לא פתוחה לכולם. אנא נסה שוב מאוחר יותר.');
+    }
 
     // Check if user profile exists in Firestore
     const userDocRef = doc(db, 'users', user.uid);

@@ -104,6 +104,7 @@ export const getOrganizerPendingRequests = async (organizerId) => {
           allRequests.push({
             gameId: doc.id,
             userId: userId,
+            organizerId: organizerId,
             gameName: `משחק ב-${gameData.date} ב-${gameData.time}`,
             date: gameData.date,
             time: gameData.time,

@@ -1,12 +1,12 @@
 .form {
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
+  gap: 1.5rem;
   background: linear-gradient(135deg, #ffffff 0%, #fff8e7 100%);
-  padding: 2rem;
+  padding: 2.5rem;
   border-radius: 25px;
   border: 3px solid #ffd166;
-  box-shadow: 0 8px 32px rgba(255, 167, 38, 0.3), 0 0 0 1px rgba(0, 180, 216, 0.2);
+  box-shadow: 0 12px 40px rgba(255, 167, 38, 0.25), 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .loading {
@@ -44,7 +44,7 @@
 
 .formRow {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 1rem;
 }
 
@@ -54,23 +54,27 @@
 }
 
 .label {
-  margin-bottom: 0.5rem;
-  font-weight: 600;
+  margin-bottom: 0.6rem;
+  font-weight: 700;
   color: #023047;
-  font-size: 0.95rem;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
 }
 
 .input,
 .select,
 .textarea {
-  padding: 0.8rem;
-  border: 2px solid #ffd166;
+  padding: 0.9rem 1.1rem;
+  border: 2px solid #e0e0e0;
   border-radius: 15px;
-  background: rgba(255, 255, 255, 0.8);
+  background: #ffffff;
   color: #023047;
   font-size: 1rem;
   font-family: inherit;
   transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .input:focus,
@@ -79,12 +83,214 @@
   outline: none;
   border-color: #00b4d8;
   background: #ffffff;
-  box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.1);
+  box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.15), 0 2px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+.input:disabled,
+.select:disabled,
+.textarea:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: #f5f5f5;
 }
 
 .textarea {
   resize: vertical;
-  min-height: 80px;
+  min-height: 100px;
+  line-height: 1.5;
+}
+
+/* Simplified Date/Time Picker */
+.dateTimeContainer {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.dateTimeControls {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  justify-content: center;
+}
+
+.timeControls {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  justify-content: center;
+}
+
+.dateDisplay,
+.timeDisplay {
+  flex: 1;
+  text-align: center;
+  padding: 0.8rem;
+  background: linear-gradient(135deg, rgba(0, 180, 216, 0.1) 0%, rgba(0, 180, 216, 0.2) 100%);
+  border: 2px solid #00b4d8;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #023047;
+  min-width: 120px;
+}
+
+.dateBtn,
+.timeBtn {
+  padding: 0.6rem 1rem;
+  background: linear-gradient(135deg, #00b4d8 0%, #0096c7 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.6rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.dateBtn:hover:not(:disabled),
+.timeBtn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #0096c7 0%, #0077b6 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 180, 216, 0.3);
+}
+
+.dateBtn:disabled,
+.timeBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Quick Time Select */
+.quickTimeSelect {
+  background: rgba(0, 180, 216, 0.08);
+  padding: 1.2rem;
+  border-radius: 15px;
+  border: 2px dashed #00b4d8;
+  margin-bottom: 1.5rem;
+}
+
+.quickTimeSelect > .label {
+  margin-bottom: 0.8rem;
+  font-size: 0.95rem;
+}
+
+.quickTimeButtons {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.6rem;
+}
+
+.quickTimeBtn {
+  padding: 0.6rem 0.5rem;
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #023047;
+}
+
+.quickTimeBtn:hover:not(:disabled) {
+  border-color: #00b4d8;
+  background: rgba(0, 180, 216, 0.1);
+  transform: translateY(-1px);
+}
+
+.quickTimeBtn.active {
+  background: linear-gradient(135deg, #00b4d8 0%, #0096c7 100%);
+  color: white;
+  border-color: #00b4d8;
+  box-shadow: 0 4px 12px rgba(0, 180, 216, 0.3);
+}
+
+.quickTimeBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .dateTimeContainer {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+
+  .quickTimeButtons {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .dateTimeContainer {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+
+  .quickTimeButtons {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Level picker with football icons */
+.levelPickerContainer {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.6rem;
+}
+
+.levelButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  padding: 0.8rem 0.5rem;
+  border: 2px solid;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  background: white;
+  font-size: 0.85rem;
+}
+
+.levelButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.levelButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.levelButtonActive {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+}
+
+.levelFootballIcon {
+  width: 24px;
+  height: 24px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
+.levelNumber {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+/* Image upload */
+.imageUploadContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
 }
 
 .fileInput {
@@ -92,32 +298,75 @@
 }
 
 .fileInputLabel {
-  display: inline-block;
-  padding: 0.8rem;
-  background: rgba(255, 255, 255, 0.8);
-  border: 2px solid #ffd166;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.9rem 1.5rem;
+  background: linear-gradient(135deg, rgba(0, 180, 216, 0.1) 0%, rgba(0, 180, 216, 0.2) 100%);
+  border: 2px dashed #00b4d8;
   border-radius: 15px;
   color: #023047;
   cursor: pointer;
   text-align: center;
   transition: all 0.3s ease;
-  margin-bottom: 0.5rem;
   font-weight: 600;
+  font-size: 0.95rem;
 }
 
 .fileInputLabel:hover {
-  border-color: #00b4d8;
-  background: #ffffff;
-  box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.1);
+  border-color: #0096c7;
+  background: linear-gradient(135deg, rgba(0, 180, 216, 0.2) 0%, rgba(0, 180, 216, 0.3) 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 180, 216, 0.2);
+}
+
+.imagePreviewContainer {
+  position: relative;
+  display: inline-block;
+  width: 100%;
 }
 
 .imagePreview {
   width: 100%;
-  max-height: 200px;
+  max-height: 250px;
   border-radius: 15px;
-  margin-top: 0.5rem;
   object-fit: cover;
-  border: 2px solid #ffd166;
+  border: 3px solid #00b4d8;
+  box-shadow: 0 4px 12px rgba(0, 180, 216, 0.2);
+}
+
+.removeImageBtn {
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.removeImageBtn:hover {
+  background: linear-gradient(135deg, #ee5a6f 0%, #f06595 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(255, 107, 107, 0.3);
+}
+
+.removeImageBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Button group */
+.buttonGroup {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  flex-direction: row-reverse;
 }
 
 .buttons {
@@ -130,41 +379,63 @@
 .submitBtn,
 .cancelBtn {
   flex: 1;
-  padding: 0.8rem 1.5rem;
+  padding: 1rem 1.8rem;
   border: none;
   border-radius: 25px;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 1.05rem;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .submitBtn {
   background: linear-gradient(135deg, #00b4d8 0%, #0096c7 100%);
   color: white;
-  box-shadow: 0 4px 12px rgba(0, 180, 216, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 180, 216, 0.4);
 }
 
-.submitBtn:hover {
+.submitBtn:hover:not(:disabled) {
   background: linear-gradient(135deg, #0096c7 0%, #0077b6 100%);
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 180, 216, 0.4);
+  box-shadow: 0 6px 20px rgba(0, 180, 216, 0.5);
+}
+
+.submitBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .cancelBtn {
   background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
   color: white;
-  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
 }
 
-.cancelBtn:hover {
+.cancelBtn:hover:not(:disabled) {
   background: linear-gradient(135deg, #ee5a6f 0%, #f06595 100%);
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(255, 107, 107, 0.4);
+  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.5);
 }
 
-.cancelBtn:hover {
-  background-color: #666;
+.cancelBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Error message */
+.error {
+  background: linear-gradient(135deg, #fee 0%, #fdd 100%);
+  color: #c82333;
+  padding: 1rem 1.2rem;
+  border-radius: 12px;
+  margin-top: 1rem;
+  border-left: 4px solid #dc3545;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(220, 53, 69, 0.2);
 }
 
 @media (max-width: 768px) {
@@ -175,6 +446,21 @@
   .formRow {
     grid-template-columns: 1fr;
     gap: 0.8rem;
+  }
+
+  .levelPickerContainer {
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+  }
+
+  .levelButton {
+    padding: 0.6rem 0.3rem;
+    font-size: 0.8rem;
+  }
+
+  .levelFootballIcon {
+    width: 20px;
+    height: 20px;
   }
 
   .label {
@@ -297,6 +583,26 @@
 
   .formRow {
     gap: 0.6rem;
+  }
+
+  .levelPickerContainer {
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.3rem;
+  }
+
+  .levelButton {
+    padding: 0.5rem 0.2rem;
+    font-size: 0.75rem;
+    border-radius: 8px;
+  }
+
+  .levelFootballIcon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .levelNumber {
+    font-size: 0.8rem;
   }
 
   .formGroup {

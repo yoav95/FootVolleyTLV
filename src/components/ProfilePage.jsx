@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { AuthContext } from '../App';
+import { AuthContext } from '../contexts/AuthContext';
 import { getUserProfile, updateUserProfile, logoutUser } from '../firebase/authService';
 import styles from './ProfilePage.module.css';
 
@@ -12,7 +12,8 @@ function ProfilePage() {
   const [formData, setFormData] = useState({
     name: '',
     level: '2',
-    phone: ''
+    phone: '',
+    nickname: ''
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -34,7 +35,8 @@ function ProfilePage() {
           setFormData({
             name: userProfile.name || '',
             level: userProfile.level?.toString() || '2',
-            phone: userProfile.phone || ''
+            phone: userProfile.phone || '',
+            nickname: userProfile.nickname || ''
           });
         }
       } catch (err) {
@@ -65,6 +67,10 @@ function ProfilePage() {
       setError('מספר טלפון לא יכול להיות ריק');
       return;
     }
+    if (!formData.nickname.trim()) {
+      setError('כינוי לא יכול להיות ריק');
+      return;
+    }
 
     setSaving(true);
     setError('');
@@ -74,7 +80,8 @@ function ProfilePage() {
       await updateUserProfile(currentUser.uid, {
         name: formData.name,
         level: parseInt(formData.level),
-        phone: formData.phone
+        phone: formData.phone,
+        nickname: formData.nickname
       });
       setProfile({
         ...profile,
@@ -95,7 +102,9 @@ function ProfilePage() {
   const handleCancel = () => {
     setFormData({
       name: profile?.name || '',
-      level: profile?.level?.toString() || '2'
+      level: profile?.level?.toString() || '2',
+      phone: profile?.phone || '',
+      nickname: profile?.nickname || ''
     });
     setEditMode(false);
     setError('');
@@ -158,12 +167,29 @@ function ProfilePage() {
                   className={styles.select}
                   disabled={saving}
                 >
-                  <option value="1">מתחיל</option>
-                  <option value="2">בינוני</option>
-                  <option value="3">מתקדם</option>
-                  <option value="4">מתקדם מאוד</option>
-                  <option value="5">מומחה</option>
+                  <option value="1">רמה 1</option>
+                  <option value="2">רמה 2</option>
+                  <option value="3">רמה 3</option>
+                  <option value="4">רמה 4</option>
+                  <option value="5">רמה 5</option>
+                  <option value="6">רמה 6</option>
+                  <option value="7">רמה 7</option>
                 </select>
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="nickname" className={styles.label}>כינוי *</label>
+                <input
+                  type="text"
+                  id="nickname"
+                  name="nickname"
+                  value={formData.nickname}
+                  onChange={handleInputChange}
+                  className={styles.input}
+                  placeholder="לדוגמה: מיקי, אלוף כדורעף"
+                  disabled={saving}
+                  maxLength="30"
+                />
               </div>
 
               <div className={styles.formGroup}>
@@ -215,11 +241,13 @@ function ProfilePage() {
                 <div className={styles.infoItem}>
                   <span className={styles.infoLabel}>רמה:</span>
                   <span className={styles.infoValue}>
-                    {(() => {
-                      const levelMap = { 1: 'מתחיל', 2: 'בינוני', 3: 'מתקדם', 4: 'מתקדם מאוד', 5: 'מומחה' };
-                      return levelMap[profile?.level] || 'בינוני';
-                    })()}
+                    רמה {profile?.level || 4}
                   </span>
+                </div>
+
+                <div className={styles.infoItem}>
+                  <span className={styles.infoLabel}>כינוי:</span>
+                  <span className={styles.infoValue}>{profile?.nickname || 'לא הוגדר'}</span>
                 </div>
 
                 <div className={styles.infoItem}>

@@ -2,13 +2,31 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useContext } from 'react';
 import { getGameById, requestToJoinGame, leaveGame, approveJoinRequest, rejectJoinRequest, deleteGame, addCommentToGame, deleteCommentFromGame } from '../firebase/gameService';
 import { getUserProfile } from '../firebase/authService';
-import { AuthContext } from '../App';
+import { AuthContext } from '../contexts/AuthContext';
+import Toast from './Toast';
+import { useToast } from '../hooks/useToast';
 import styles from './GameDetailsPage.module.css';
+
+// Function to get color based on level
+function getLevelColor(level) {
+  const numericLevel = parseInt(level);
+  const colorMap = {
+    1: '#ec4899',  // Pink
+    2: '#e879f9',  // Pink-Purple
+    3: '#c084fc',  // Purple
+    4: '#a78bfa',  // Purple-Blue (Middle)
+    5: '#818cf8',  // Blue-Purple
+    6: '#60a5fa',  // Light Blue
+    7: '#3b82f6'   // Deep Blue
+  };
+  return colorMap[numericLevel] || '#a78bfa';
+}
 
 function GameDetailsPage() {
   const { gameId } = useParams();
   const navigate = useNavigate();
   const { currentUser } = useContext(AuthContext);
+  const { toast, hideToast, showSuccess, showError } = useToast();
   const [game, setGame] = useState(null);
   const [commentText, setCommentText] = useState('');
   const [commentLoading, setCommentLoading] = useState(false);
@@ -147,9 +165,10 @@ function GameDetailsPage() {
       await leaveGame(gameId, currentUser.uid);
       const updatedGame = await getGameById(gameId);
       setGame(updatedGame);
-      alert('עזבת את המשחק');
+      showSuccess('עזבת את המשחק בהצלחה');
     } catch (err) {
       setError(err.message);
+      showError('שגיאה בעזיבת המשחק');
     } finally {
       setActionLoading(false);
     }
@@ -212,7 +231,7 @@ function GameDetailsPage() {
 
     setCommentLoading(true);
     try {
-      const userName = userProfiles[currentUser.uid]?.name || currentUser.displayName || 'משתמש';
+      const userName = userProfiles[currentUser.uid]?.nickname || userProfiles[currentUser.uid]?.name || currentUser.displayName || 'משתמש';
       await addCommentToGame(gameId, currentUser.uid, userName, commentText);
       const updatedGame = await getGameById(gameId);
       setGame(updatedGame);
@@ -243,17 +262,26 @@ function GameDetailsPage() {
   const isFull = game.players && game.players.length >= game.playersNeeded;
   const isOrganizer = currentUser && game.organizerId === currentUser.uid;
   const hasPendingRequest = currentUser && game.pendingRequests && game.pendingRequests.includes(currentUser.uid);
+  const canViewFullDetails = isOrganizer || isUserInGame;
+
+  // Get the level color for background
+  const levelColor = getLevelColor(game.level);
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} style={{
+      background: `linear-gradient(135deg, ${levelColor}15 0%, ${levelColor}25 50%, ${levelColor}35 100%)`
+    }}>
       <Link to="/" className={styles.backLink}>← חזרה למפה</Link>
       
       {error && <div className={styles.error}>{error}</div>}
       
-      <div className={styles.gameCard}>
+      <div className={styles.gameCard} style={{
+        background: `linear-gradient(135deg, #ffffff 0%, ${levelColor}10 100%)`,
+        borderColor: levelColor
+      }}>
         <header className={styles.header}>
           <h1 className={styles.title}>
-            {game.title || `משחק של ${organizerProfile?.name || 'מארגן'}`}
+            {game.title || `משחק של ${organizerProfile?.nickname || organizerProfile?.name || 'מארגן'}`}
           </h1>
           <span className={`${styles.level} ${styles[`level-${game.level}`.toLowerCase()]}`}>
             רמה {game.level}
@@ -278,7 +306,7 @@ function GameDetailsPage() {
                   style={{ width: `${((game.players?.length || 0) / game.playersNeeded) * 100}%` }}
                 ></div>
               </div>
-              {game.players && game.players.length > 0 && (
+              {canViewFullDetails && game.players && game.players.length > 0 && (
                 <div className={styles.playersList}>
                   <h4 className={styles.playersListTitle}>רשימת השחקנים:</h4>
                   <ul className={styles.playerListItems}>
@@ -287,7 +315,7 @@ function GameDetailsPage() {
                         <span className={styles.playerNumber}>{index + 1}.</span>
                         <div className={styles.playerInfo}>
                           <span className={styles.playerName}>
-                            {userProfiles[playerId]?.name || 'שחקן'}
+                            {userProfiles[playerId]?.nickname || userProfiles[playerId]?.name || 'שחקן'}
                           </span>
                           {userProfiles[playerId]?.phone && (
                             <span className={styles.playerPhone}>📱 {userProfiles[playerId].phone}</span>
@@ -305,7 +333,7 @@ function GameDetailsPage() {
           </div>
 
           {/* Pending Requests Section - Only visible to organizer */}
-          {isOrganizer && game.pendingRequests && game.pendingRequests.length > 0 && (
+          {canViewFullDetails && isOrganizer && game.pendingRequests && game.pendingRequests.length > 0 && (
             <div className={styles.section}>
               <h3 className={styles.sectionTitle}>⏳ בקשות ממתינות ({game.pendingRequests.length})</h3>
               <div className={styles.pendingList}>
@@ -355,34 +383,37 @@ function GameDetailsPage() {
             </div>
           </div>
 
-          {game.notes && (
+          {canViewFullDetails && game.notes && (
             <div className={styles.section}>
               <h3 className={styles.sectionTitle}>📝 הערות</h3>
               <p className={styles.detail}>{game.notes}</p>
             </div>
           )}
 
-          {/* Comments Section */}
+          {/* Comments Section - Only visible to participants and organizer */}
+          {canViewFullDetails && (
           <div className={styles.section}>
-            <h3 className={styles.sectionTitle}>💬 הערות ({(game.comments || []).length})</h3>
+            <h3 className={styles.sectionTitle}>💬 הודעות ({(game.comments || []).length})</h3>
             
             {/* Add Comment Form */}
             {currentUser && (
               <form onSubmit={handleAddComment} className={styles.commentForm}>
+                <label className={styles.commentLabel}>הוסף הערה למשחק:</label>
                 <textarea
                   value={commentText}
                   onChange={(e) => setCommentText(e.target.value)}
-                  placeholder="הוסף הערה..."
+                  placeholder="שתף את המחשבות שלך, שאל שאלות או תן עדכונים..."
                   className={styles.commentInput}
-                  rows="3"
+                  rows="4"
                   disabled={commentLoading}
+                  dir="rtl"
                 />
                 <button
                   type="submit"
                   className={styles.submitCommentBtn}
                   disabled={commentLoading || !commentText.trim()}
                 >
-                  {commentLoading ? 'שולח...' : 'שלח הערה'}
+                  {commentLoading ? '📤 שולח...' : '📤 פרסם הערה'}
                 </button>
               </form>
             )}
@@ -396,23 +427,34 @@ function GameDetailsPage() {
               </div>
             )}
 
+            {!isUserInGame && currentUser && (
+              <div className={styles.loginPrompt}>
+                <p>הצטרף למשחק כדי להוסיף הערות</p>
+              </div>
+            )}
+
             {/* Comments List */}
             <div className={styles.commentsList}>
               {game.comments && game.comments.length > 0 ? (
                 game.comments.map((comment) => (
                   <div key={comment.id} className={styles.commentItem}>
-                    <div className={styles.commentHeader}>
-                      <span className={styles.commentName}>{comment.userName}</span>
-                      <span className={styles.commentTime}>
-                        {new Date(comment.createdAt?.toDate?.() || comment.createdAt).toLocaleDateString('he-IL', {
-                          month: 'short',
-                          day: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })}
-                      </span>
+                    <div className={styles.commentContent}>
+                      <div className={styles.commentHeader}>
+                        <div className={styles.commentAuthorSection}>
+                          <span className={styles.commentAvatar}>👤</span>
+                          <span className={styles.commentName}>{comment.userName}</span>
+                        </div>
+                        <span className={styles.commentTime}>
+                          {new Date(comment.createdAt?.toDate?.() || comment.createdAt).toLocaleDateString('he-IL', {
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </span>
+                      </div>
+                      <p className={styles.commentText} dir="rtl">{comment.text}</p>
                     </div>
-                    <p className={styles.commentText}>{comment.text}</p>
                     {(currentUser?.uid === comment.userId || isOrganizer) && (
                       <button
                         onClick={() => handleDeleteComment(comment.id)}
@@ -425,10 +467,11 @@ function GameDetailsPage() {
                   </div>
                 ))
               ) : (
-                <p className={styles.noComments}>אין הערות עדיין. היה הראשון להוסיף הערה!</p>
+                <p className={styles.noComments}>💭 אין הערות עדיין. היה הראשון להוסיף הערה!</p>
               )}
             </div>
           </div>
+          )}
         </div>
 
         <div className={styles.actions}>
@@ -440,15 +483,19 @@ function GameDetailsPage() {
             <button onClick={handleJoinGame} className={styles.joinBtn} disabled={actionLoading}>
               {actionLoading ? 'שולח בקשה...' : '📩 בקש להצטרף למשחק'}
             </button>
-          ) : isUserInGame && !isFull ? (
+          ) : isUserInGame && !isOrganizer && !isFull ? (
             <button onClick={handleLeaveGame} className={styles.leaveBtn} disabled={actionLoading}>
               {actionLoading ? 'עוזב...' : 'עזיבה מהמשחק'}
             </button>
-          ) : (
+          ) : isUserInGame && isOrganizer ? (
+            <button className={styles.organizerBtn} disabled title="המארגן לא יכול לעזוב את המשחק">
+              🔐 אתה המארגן - לא ניתן לעזוב
+            </button>
+          ) : isFull && !isUserInGame ? (
             <button className={styles.fullBtn} disabled>
               המשחק מלא
             </button>
-          )}
+          ) : null}
           {isOrganizer && (
             <button onClick={handleDeleteGame} className={styles.deleteBtn} disabled={actionLoading}>
               {actionLoading ? 'מוחק...' : '🗑️ מחק משחק'}
@@ -459,6 +506,15 @@ function GameDetailsPage() {
           </button>
         </div>
       </div>
+
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={hideToast}
+          duration={toast.duration}
+        />
+      )}
     </div>
   );
 }

@@ -1,0 +1,217 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal {
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #00b4d8;
+  margin: 0;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.playerCard {
+  background: linear-gradient(135deg, rgba(0, 180, 216, 0.1) 0%, rgba(0, 180, 216, 0.2) 100%);
+  border: 2px solid #00b4d8;
+  border-radius: 15px;
+  padding: 1.2rem;
+}
+
+.playerInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.playerName {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #023047;
+}
+
+.playerLevel {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #00b4d8;
+  padding: 0.4rem 0.8rem;
+  background: rgba(0, 180, 216, 0.2);
+  border-radius: 8px;
+  width: fit-content;
+}
+
+.playerPhone {
+  font-size: 0.95rem;
+  color: #666;
+}
+
+.gameInfo {
+  background: rgba(255, 209, 102, 0.1);
+  border-left: 4px solid #ffd166;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.infoLabel {
+  font-size: 0.85rem;
+  color: #999;
+  margin: 0 0 0.3rem 0;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.gameDetails {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #213547;
+  margin: 0;
+}
+
+.gameTime {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0.3rem 0 0 0;
+}
+
+.error {
+  background: linear-gradient(135deg, #fee 0%, #fdd 100%);
+  color: #c82333;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  border-left: 4px solid #dc3545;
+  margin-bottom: 1rem;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 0.8rem;
+  flex-direction: column-reverse;
+}
+
+.approveBtn,
+.rejectBtn {
+  padding: 0.95rem 1.5rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1;
+}
+
+.approveBtn {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  color: white;
+}
+
+.approveBtn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(34, 197, 94, 0.3);
+}
+
+.rejectBtn {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+}
+
+.rejectBtn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(239, 68, 68, 0.3);
+}
+
+.approveBtn:disabled,
+.rejectBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.approveBtn:active:not(:disabled),
+.rejectBtn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+@media (max-width: 600px) {
+  .modal {
+    padding: 1.5rem;
+    max-width: 95%;
+  }
+
+  .title {
+    font-size: 1.3rem;
+  }
+
+  .playerName {
+    font-size: 1.1rem;
+  }
+
+  .approveBtn,
+  .rejectBtn {
+    padding: 0.85rem 1.2rem;
+    font-size: 0.95rem;
+  }
+}

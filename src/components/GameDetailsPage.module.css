@@ -80,23 +80,52 @@
   letter-spacing: 0.5px;
 }
 
-.level.beginner {
-  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+/* Pink to Blue Gradient - Level 1 (Pink) */
+.level.level-1,
+.level[class*="level-1"] {
+  background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
   color: #fff;
 }
 
-.level.intermediate {
-  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+/* Pink-Purple - Level 2 */
+.level.level-2,
+.level[class*="level-2"] {
+  background: linear-gradient(135deg, #e879f9 0%, #d946ef 100%);
   color: #fff;
 }
 
-.level.advanced {
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+/* Purple - Level 3 */
+.level.level-3,
+.level[class*="level-3"] {
+  background: linear-gradient(135deg, #c084fc 0%, #a855f7 100%);
   color: #fff;
 }
 
-.level.all-levels {
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+/* Purple-Blue (Middle) - Level 4 */
+.level.level-4,
+.level[class*="level-4"] {
+  background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
+  color: #fff;
+}
+
+/* Blue-Purple - Level 5 */
+.level.level-5,
+.level[class*="level-5"] {
+  background: linear-gradient(135deg, #818cf8 0%, #6366f1 100%);
+  color: #fff;
+}
+
+/* Light Blue - Level 6 */
+.level.level-6,
+.level[class*="level-6"] {
+  background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+  color: #fff;
+}
+
+/* Deep Blue - Level 7 */
+.level.level-7,
+.level[class*="level-7"] {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   color: #fff;
 }
 
@@ -479,10 +508,10 @@
 
 .commentsSection {
   grid-column: 1 / -1;
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.12) 0%, rgba(168, 85, 247, 0.08) 100%);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(168, 85, 247, 0.05) 100%);
   padding: 2rem;
   border-radius: 18px;
-  border: 2px solid rgba(139, 92, 246, 0.3);
+  border: 2px solid rgba(139, 92, 246, 0.2);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
@@ -490,68 +519,94 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
   background: white;
-  padding: 1.5rem;
-  border-radius: 12px;
-  border: 2px solid rgba(139, 92, 246, 0.2);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  padding: 2rem;
+  border-radius: 16px;
+  border: 2px solid rgba(139, 92, 246, 0.25);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+.commentForm:hover {
+  box-shadow: 0 5px 20px rgba(139, 92, 246, 0.15);
+  border-color: #8b5cf6;
+}
+
+.commentLabel {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #7c3aed;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.commentLabel::before {
+  content: '✍️';
+  font-size: 1.2rem;
 }
 
 .commentInput {
   width: 100%;
-  padding: 1rem;
-  border: 2px solid rgba(139, 92, 246, 0.3);
-  border-radius: 10px;
-  font-size: 0.95rem;
+  padding: 1rem 1.25rem;
+  border: 2px solid rgba(139, 92, 246, 0.25);
+  border-radius: 12px;
+  font-size: 1rem;
   font-family: inherit;
   resize: vertical;
-  min-height: 100px;
-  background: #f9fafb;
-  color: #023047;
+  min-height: 120px;
+  background: #fafafa;
+  color: var(--text-dark, #1f2937);
   transition: all 0.3s ease;
+  line-height: 1.6;
+  direction: rtl;
+  text-align: right;
 }
 
 .commentInput::placeholder {
   color: #9ca3af;
-  font-weight: 500;
+  font-weight: 400;
+  opacity: 0.7;
 }
 
 .commentInput:focus {
   outline: none;
   border-color: #8b5cf6;
   background: white;
-  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15);
+  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12);
 }
 
 .submitCommentBtn {
   background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
   color: white;
-  padding: 1rem 2rem;
+  padding: 0.875rem 2rem;
   border: none;
   border-radius: 12px;
   cursor: pointer;
   font-weight: 700;
   font-size: 1rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
-  min-height: 48px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
+  min-height: 50px;
+  text-transform: none;
+  letter-spacing: 0.3px;
+  align-self: flex-end;
 }
 
 .submitCommentBtn:hover:not(:disabled) {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(139, 92, 246, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(139, 92, 246, 0.4);
   background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
 }
 
 .submitCommentBtn:active:not(:disabled) {
-  transform: translateY(-1px);
+  transform: translateY(0);
 }
 
 .submitCommentBtn:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
   transform: none;
 }
@@ -573,93 +628,245 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.25rem;
 }
 
 .commentItem {
   background: white;
-  padding: 1.2rem;
-  border-radius: 12px;
-  border: 1px solid rgba(139, 92, 246, 0.15);
+  padding: 1.5rem;
+  border-radius: 14px;
+  border: 2px solid rgba(139, 92, 246, 0.15);
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
   transition: all 0.3s ease;
 }
 
 .commentItem:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.15);
   border-color: #8b5cf6;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
 }
 
 .commentContent {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 1rem;
 }
 
-.commentMeta {
+.commentHeader {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 1rem;
-  margin-bottom: 0.3rem;
-  font-size: 0.85rem;
-  flex-wrap: wrap;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid rgba(139, 92, 246, 0.1);
 }
 
-.commentAuthor {
+.commentAuthorSection {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.commentAvatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+}
+
+.commentName {
   font-weight: 700;
   color: #7c3aed;
+  font-size: 1rem;
 }
 
 .commentTime {
   color: #9ca3af;
   font-weight: 500;
+  font-size: 0.85rem;
+  white-space: nowrap;
 }
 
 .commentText {
-  color: #023047;
-  line-height: 1.7;
+  color: var(--text-dark, #1f2937);
+  line-height: 1.8;
   word-break: break-word;
-  font-size: 0.95rem;
+  font-size: 1rem;
+  direction: rtl;
+  text-align: right;
+  padding: 0.5rem 0;
 }
 
 .deleteCommentBtn {
   background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
   color: white;
   border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
+  padding: 0.6rem 1.25rem;
+  border-radius: 10px;
   cursor: pointer;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 700;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 6px rgba(239, 68, 68, 0.1);
-  min-height: 36px;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
+  min-height: 38px;
   flex-shrink: 0;
-  text-transform: uppercase;
   letter-spacing: 0.3px;
+  align-self: flex-start;
 }
 
-.deleteCommentBtn:hover {
+.deleteCommentBtn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
   background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
 }
 
+.deleteCommentBtn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
 .noComments {
-  color: #9ca3af;
-  font-size: 0.95rem;
+  color: #8b5cf6;
+  font-size: 1rem;
   text-align: center;
-  padding: 2rem 1.5rem;
+  padding: 3rem 2rem;
   font-style: italic;
-  background: rgba(0, 0, 0, 0.02);
-  border-radius: 10px;
-  border: 1px dashed rgba(139, 92, 246, 0.2);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(168, 85, 247, 0.08) 100%);
+  border-radius: 14px;
+  border: 2px dashed rgba(139, 92, 246, 0.3);
+  font-weight: 500;
+}
+
+/* ========== Action Buttons at Bottom ========== */
+.actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 3px solid rgba(255, 209, 102, 0.3);
+  flex-wrap: wrap;
+}
+
+.joinBtn,
+.leaveBtn,
+.organizerBtn,
+.deleteBtn,
+.cancelBtn,
+.pendingBtn,
+.fullBtn {
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex: 1;
+  min-width: 200px;
+  min-height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.joinBtn {
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  color: white;
+  border: 2px solid transparent;
+}
+
+.joinBtn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(74, 222, 128, 0.4);
+}
+
+.leaveBtn {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  border: 2px solid transparent;
+}
+
+.leaveBtn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+}
+
+.organizerBtn {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: white;
+  border: 2px solid transparent;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.deleteBtn {
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  color: white;
+  border: 2px solid transparent;
+}
+
+.deleteBtn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(249, 115, 22, 0.4);
+}
+
+.cancelBtn {
+  background: linear-gradient(135deg, #00b4d8 0%, #0096c7 100%);
+  color: white;
+  border: 2px solid transparent;
+}
+
+.cancelBtn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #0096c7 0%, #0077b6 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 180, 216, 0.4);
+}
+
+.pendingBtn {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  color: white;
+  border: 2px solid transparent;
+  cursor: not-allowed;
+}
+
+.fullBtn {
+  background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
+  color: white;
+  border: 2px solid transparent;
+  cursor: not-allowed;
+}
+
+.joinBtn:disabled,
+.leaveBtn:disabled,
+.deleteBtn:disabled,
+.cancelBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.joinBtn:active:not(:disabled),
+.leaveBtn:active:not(:disabled),
+.deleteBtn:active:not(:disabled),
+.cancelBtn:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 /* ========== Tablet Styles (768px) ========== */
@@ -731,17 +938,51 @@
   }
 
   .commentForm {
-    padding: 1.2rem;
+    padding: 1.5rem;
+    gap: 1rem;
+  }
+
+  .commentLabel {
+    font-size: 0.95rem;
   }
 
   .commentInput {
-    min-height: 90px;
-    padding: 0.8rem;
+    min-height: 100px;
+    padding: 1rem;
+    font-size: 0.95rem;
+  }
+
+  .submitCommentBtn {
+    padding: 0.875rem 1.75rem;
+    font-size: 0.95rem;
+  }
+
+  .commentsList {
+    gap: 1.125rem;
   }
 
   .commentItem {
-    padding: 1rem;
-    gap: 0.8rem;
+    padding: 1.25rem;
+    gap: 1rem;
+  }
+
+  .commentAvatar {
+    width: 36px;
+    height: 36px;
+    font-size: 1.15rem;
+  }
+
+  .commentName {
+    font-size: 0.95rem;
+  }
+
+  .commentText {
+    font-size: 0.95rem;
+  }
+
+  .deleteCommentBtn {
+    padding: 0.6rem 1.125rem;
+    font-size: 0.85rem;
   }
 
   .commentMeta {
@@ -756,6 +997,25 @@
   .meetingPointImage {
     flex: 0 0 auto;
     height: 250px;
+  }
+
+  .actions {
+    gap: 0.875rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+  }
+
+  .joinBtn,
+  .leaveBtn,
+  .organizerBtn,
+  .deleteBtn,
+  .cancelBtn,
+  .pendingBtn,
+  .fullBtn {
+    padding: 0.9rem 1.75rem;
+    font-size: 0.95rem;
+    min-width: 180px;
+    min-height: 50px;
   }
 }
 
@@ -909,20 +1169,25 @@
   }
 
   .commentForm {
-    padding: 1rem 0.8rem;
-    gap: 0.8rem;
+    padding: 1.25rem;
+    gap: 0.875rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .commentLabel {
+    font-size: 0.9rem;
   }
 
   .commentInput {
-    padding: 0.8rem 0.7rem;
-    min-height: 80px;
+    padding: 0.875rem 1rem;
+    min-height: 90px;
     font-size: 0.95rem;
   }
 
   .submitCommentBtn {
     padding: 0.8rem 1.5rem;
     font-size: 0.9rem;
-    min-height: 44px;
+    min-height: 46px;
   }
 
   .loginPrompt {
@@ -932,29 +1197,35 @@
   }
 
   .commentsList {
-    gap: 0.8rem;
+    gap: 1rem;
   }
 
   .commentItem {
-    padding: 1rem 0.8rem;
-    border-radius: 10px;
-    border: 1px solid rgba(139, 92, 246, 0.15);
+    padding: 1.25rem 1rem;
+    border-radius: 12px;
+    flex-direction: column;
   }
 
   .commentItem:hover {
     transform: translateY(0);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 3px 10px rgba(139, 92, 246, 0.1);
   }
 
-  .commentMeta {
+  .commentHeader {
     flex-direction: column;
-    gap: 0.3rem;
-    font-size: 0.8rem;
-    margin-bottom: 0.4rem;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding-bottom: 0.875rem;
   }
 
-  .commentAuthor {
-    font-size: 0.85rem;
+  .commentAvatar {
+    width: 34px;
+    height: 34px;
+    font-size: 1.1rem;
+  }
+
+  .commentName {
+    font-size: 0.95rem;
   }
 
   .commentTime {
@@ -962,24 +1233,24 @@
   }
 
   .commentText {
-    font-size: 0.9rem;
-    line-height: 1.6;
+    font-size: 0.95rem;
+    line-height: 1.7;
   }
 
   .commentContent {
-    gap: 0.4rem;
+    gap: 0.875rem;
   }
 
   .deleteCommentBtn {
-    padding: 0.5rem 1rem;
-    font-size: 0.8rem;
-    min-height: 36px;
     width: 100%;
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+    min-height: 40px;
   }
 
   .noComments {
-    padding: 1.5rem 1rem;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+    padding: 2rem 1.25rem;
   }
 
   .noRequests {
@@ -996,5 +1267,33 @@
     flex: 0 0 auto;
     height: 200px;
     width: 100%;
+  }
+
+  .actions {
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+  }
+
+  .joinBtn,
+  .leaveBtn,
+  .organizerBtn,
+  .deleteBtn,
+  .cancelBtn,
+  .pendingBtn,
+  .fullBtn {
+    width: 100%;
+    min-width: 100%;
+    padding: 0.875rem 1.5rem;
+    font-size: 0.9rem;
+    min-height: 48px;
+  }
+
+  .joinBtn:hover:not(:disabled),
+  .leaveBtn:hover:not(:disabled),
+  .deleteBtn:hover:not(:disabled),
+  .cancelBtn:hover:not(:disabled) {
+    transform: translateY(-1px);
   }
 }

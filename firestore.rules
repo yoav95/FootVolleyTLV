@@ -16,16 +16,10 @@ service cloud.firestore {
       // Allow organizer to update everything
       allow update: if request.auth.uid == resource.data.organizerId;
       
-      // Allow users to add/remove themselves from players or pendingRequests arrays
-      allow update: if request.auth != null && 
-        (
-          // User can add/remove themselves from players
-          (request.resource.data.players.hasAny([request.auth.uid]) || 
-           !resource.data.players.hasAny([request.auth.uid])) ||
-          // User can add themselves to pendingRequests
-          (request.resource.data.pendingRequests.hasAny([request.auth.uid]) &&
-           !resource.data.pendingRequests.hasAny([request.auth.uid]))
-        );
+      // Allow any authenticated user to update players, pendingRequests, or comments
+      allow update: if request.auth != null &&
+        // Only allow modifications to players, pendingRequests, comments, and metadata fields
+        (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['players', 'pendingRequests', 'comments', 'currentPlayers', 'updatedAt']));
     }
   }
 }

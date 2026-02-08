@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { AuthContext } from '../App';
+import { AuthContext } from '../contexts/AuthContext';
 import { getOrganizerPendingRequests, approveJoinRequest, rejectJoinRequest } from '../firebase/gameService';
 import { getUserProfile } from '../firebase/authService';
 import styles from './NotificationsPage.module.css';

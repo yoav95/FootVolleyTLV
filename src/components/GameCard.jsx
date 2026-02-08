@@ -1,6 +1,7 @@
+import { memo } from 'react';
 import styles from './GameCard.module.css';
 
-function GameCard({ game }) {
+const GameCard = memo(function GameCard({ game }) {
   const spotsLeft = game.playersNeeded - game.currentPlayers;
   const isFull = spotsLeft === 0;
 
@@ -17,29 +18,29 @@ function GameCard({ game }) {
       </div>
 
       <div className={styles.level}>
-        <span className={styles.levelBadge}>{game.level}</span>
+        <span className={`${styles.levelBadge} ${styles[`level${game.level}`]}`}>רמה {game.level}</span>
       </div>
 
       <div className={styles.organizer}>
-        <strong>Organizer:</strong> {game.organizer}
+        <strong>מארגן:</strong> {game.organizer}
       </div>
 
       <div className={styles.players}>
         <div className={styles.playersInfo}>
-          <strong>Players:</strong> {game.currentPlayers} / {game.playersNeeded}
+          <strong>שחקנים:</strong> {game.currentPlayers} / {game.playersNeeded}
         </div>
         <div className={styles.spotsLeft}>
           {isFull ? (
-            <span className={styles.fullText}>FULL</span>
+            <span className={styles.fullText}>מלא</span>
           ) : (
-            <span className={styles.spotsText}>{spotsLeft} spots left</span>
+            <span className={styles.spotsText}>{spotsLeft} מקומות פנויים</span>
           )}
         </div>
       </div>
 
       {game.notes && (
         <div className={styles.notes}>
-          <strong>Notes:</strong> {game.notes}
+          <strong>הערות:</strong> {game.notes}
         </div>
       )}
 
@@ -47,10 +48,10 @@ function GameCard({ game }) {
         className={styles.joinBtn}
         disabled={isFull}
       >
-        {isFull ? 'Game Full' : 'Join Game'}
+        {isFull ? 'המשחק מלא' : 'הצטרפות למשחק'}
       </button>
     </div>
   );
-}
+});
 
 export default GameCard;

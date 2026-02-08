@@ -1,13 +1,42 @@
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import GameForm from './GameForm';
 import styles from './GameCreationPage.module.css';
 
 function GameCreationPage() {
   const [searchParams] = useSearchParams();
+  const [locationName, setLocationName] = useState('Loading...');
   const navigate = useNavigate();
   
   const lat = parseFloat(searchParams.get('lat'));
   const lng = parseFloat(searchParams.get('lng'));
+
+  useEffect(() => {
+    const fetchLocationName = async () => {
+      try {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
+        );
+        const data = await response.json();
+        
+        // Extract readable location name
+        const parts = [];
+        if (data.address.road) parts.push(data.address.road);
+        if (data.address.neighbourhood) parts.push(data.address.neighbourhood);
+        if (data.address.suburb) parts.push(data.address.suburb);
+        if (data.address.city) parts.push(data.address.city);
+        
+        setLocationName(parts.join(', ') || 'Tel Aviv, Israel');
+      } catch (error) {
+        console.error('Error fetching location:', error);
+        setLocationName('Tel Aviv, Israel');
+      }
+    };
+
+    if (lat && lng) {
+      fetchLocationName();
+    }
+  }, [lat, lng]);
 
   if (!lat || !lng) {
     return (
@@ -35,7 +64,7 @@ function GameCreationPage() {
       <header className={styles.header}>
         <h1 className={styles.title}>יצירת משחק חדש</h1>
         <p className={styles.locationInfo}>
-          📍 {lat.toFixed(4)}, {lng.toFixed(4)}
+          📍 {locationName}
         </p>
       </header>
 

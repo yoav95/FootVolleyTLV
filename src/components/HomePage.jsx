@@ -1,9 +1,11 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useMemo, useCallback, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MapContainer, TileLayer, GeoJSON, Marker, useMapEvent, useMap, CircleMarker, Popup } from 'react-leaflet';
 import { GiSoccerBall } from 'react-icons/gi';
-import { getAllGames, getOrganizerPendingRequests } from '../firebase/gameService';
-import { AuthContext } from '../App';
+import { getAllGames } from '../firebase/gameService';
+import { AuthContext } from '../contexts/AuthContext';
+import Toast from './Toast';
+import { useToast } from '../hooks/useToast';
 import styles from './HomePage.module.css';
 import geoJsonPolygons from '../data/geojsonPolygons.json';
 import 'leaflet/dist/leaflet.css';
@@ -39,78 +41,82 @@ function MapClickHandler({ setSelectedLocation, setShowDialog, setPopupPosition 
 
 // Function to get color based on level
 function getLevelColor(level) {
-  // Handle numeric levels (1-5)
+  // Handle numeric levels (1-7) with pink to blue gradient
   const numericLevel = parseInt(level);
   const colorMap = {
-    1: '#4ade80',  // מתחיל - green
-    2: '#fbbf24',  // בינוני - yellow
-    3: '#ef4444',  // מתקדם - red
-    4: '#f97316',  // מתקדם מאוד - orange
-    5: '#8b5cf6'   // מומחה - purple
+    1: '#ec4899',  // Pink
+    2: '#e879f9',  // Pink-Purple
+    3: '#c084fc',  // Purple
+    4: '#a78bfa',  // Purple-Blue (Middle)
+    5: '#818cf8',  // Blue-Purple
+    6: '#60a5fa',  // Light Blue
+    7: '#3b82f6'   // Deep Blue
   };
   
-  // Return color for numeric level, or default blue
-  return colorMap[numericLevel] || '#00b4d8';
+  // Return color for numeric level, or default to middle purple-blue
+  return colorMap[numericLevel] || '#a78bfa';
 }
 
 // Component to add labels to GeoJSON features
-function GeoJSONWithLabels({ data }) {
+const GeoJSONWithLabels = memo(function GeoJSONWithLabels({ data }) {
+  const onEachFeature = useCallback((feature, layer) => {
+    const { name, nets } = feature.properties;
+    
+    // Create simple popup
+    const popupContent = `
+      <div style="text-align: right; direction: rtl; font-family: Arial, sans-serif;">
+        <div style="font-weight: bold; font-size: 13px; color: #00b4d8; margin-bottom: 4px;">
+          ${name}
+        </div>
+        <div style="font-size: 12px; color: #666;">
+          🥅 רשתות: ${nets}
+        </div>
+      </div>
+    `;
+    layer.bindPopup(popupContent);
+    
+    // Add hover effects
+    layer.on('mouseover', function() {
+      this.setStyle({ 
+        weight: 3, 
+        opacity: 0.8,
+        fillOpacity: 0.12,
+        color: '#0096c7'
+      });
+      this.bringToFront();
+    });
+    layer.on('mouseout', function() {
+      this.setStyle({ 
+        weight: 2, 
+        opacity: 0.6,
+        fillOpacity: 0.08,
+        color: '#00b4d8'
+      });
+    });
+  }, []);
+
+  const geoJsonStyle = useMemo(() => ({
+    color: '#00b4d8',
+    weight: 2,
+    opacity: 0.6,
+    fillOpacity: 0.08,
+    fillColor: '#00b4d8'
+  }), []);
+
   return (
     <GeoJSON 
       data={data}
-      style={{
-        color: '#00b4d8',
-        weight: 2,
-        opacity: 0.6,
-        fillOpacity: 0.08,
-        fillColor: '#00b4d8'
-      }}
-      onEachFeature={(feature, layer) => {
-        const { name, nets } = feature.properties;
-        
-        // Create simple popup
-        const popupContent = `
-          <div style="text-align: right; direction: rtl; font-family: Arial, sans-serif;">
-            <div style="font-weight: bold; font-size: 13px; color: #00b4d8; margin-bottom: 4px;">
-              ${name}
-            </div>
-            <div style="font-size: 12px; color: #666;">
-              🥅 רשתות: ${nets}
-            </div>
-          </div>
-        `;
-        layer.bindPopup(popupContent);
-        
-        // Add hover effects
-        layer.on('mouseover', function() {
-          this.setStyle({ 
-            weight: 3, 
-            opacity: 0.8,
-            fillOpacity: 0.12,
-            color: '#0096c7'
-          });
-          this.bringToFront();
-        });
-        layer.on('mouseout', function() {
-          this.setStyle({ 
-            weight: 2, 
-            opacity: 0.6,
-            fillOpacity: 0.08,
-            color: '#00b4d8'
-          });
-        });
-      }}
+      style={geoJsonStyle}
+      onEachFeature={onEachFeature}
     />
   );
-}
-function GameMarker({ game, navigate }) {
-  const color = getLevelColor(game.level);
+});
 
-  // Create a unique popup key to force updates
-  const popupKey = `${game.id}-${game.currentPlayers}`;
+const GameMarker = memo(function GameMarker({ game, navigate, hasPendingRequests = false }) {
+  const color = useMemo(() => getLevelColor(game.level), [game.level]);
 
   // Create custom icon with soccer ball
-  const createSoccerBallIcon = (fillColor) => {
+  const icon = useMemo(() => {
     const isFull = game.currentPlayers >= game.playersNeeded;
     const progressPercentage = (game.currentPlayers / game.playersNeeded) * 100;
     const dashArray = (progressPercentage / 100) * (2 * Math.PI * 20);
@@ -134,18 +140,14 @@ function GameMarker({ game, navigate }) {
             stroke-dasharray="${dashArray} ${2 * Math.PI * 20}"
             transform="rotate(-90 28 28)"
           />
-          <!-- Colored soccer ball circle -->
-          <circle cx="28" cy="28" r="16" fill="${isFull ? '#9ca3af' : fillColor}" stroke="white" stroke-width="1.5"/>
-          <!-- Soccer ball pentagon pattern -->
-          <g fill="white" opacity="0.7">
-            <circle cx="28" cy="28" r="3"/>
-            <circle cx="28" cy="17" r="2"/>
-            <circle cx="36" cy="22" r="2"/>
-            <circle cx="36" cy="34" r="2"/>
-            <circle cx="28" cy="39" r="2"/>
-            <circle cx="20" cy="34" r="2"/>
-            <circle cx="20" cy="22" r="2"/>
-          </g>
+          <!-- Colored circle background for football -->
+          <circle cx="28" cy="28" r="16" fill="${isFull ? '#e5e7eb' : color}" stroke="${isFull ? '#9ca3af' : color}" stroke-width="1.5" opacity="0.9"/>
+          
+          <!-- Football icon from SVG file -->
+          <image href="/football.svg" x="14" y="14" width="28" height="28" opacity="${isFull ? '0.4' : '1'}"/>
+          
+          <!-- Red badge for pending requests -->
+          ${hasPendingRequests ? `<circle cx="46" cy="10" r="7" fill="#ef4444" stroke="white" stroke-width="1.5"/>` : ''}
         </svg>
       </div>
     `;
@@ -157,21 +159,26 @@ function GameMarker({ game, navigate }) {
       popupAnchor: [0, -28],
       className: 'custom-soccer-icon'
     });
-  };
+  }, [color, game.currentPlayers, game.playersNeeded, hasPendingRequests]);
+
+  const handleClick = useCallback((e) => {
+    e.target.openPopup();
+  }, []);
+
+  const handlePopupClick = useCallback(() => {
+    navigate(`/game/${game.id}`);
+  }, [navigate, game.id]);
 
   return (
     <Marker
-      key={popupKey}
       position={[game.coordinates.lat, game.coordinates.lng]}
-      icon={createSoccerBallIcon(color)}
+      icon={icon}
       eventHandlers={{
-        click: (e) => {
-          e.target.openPopup();
-        }
+        click: handleClick
       }}
     >
       <Popup className={styles.customPopup}>
-        <div className={styles.popupContentWrapper} onClick={() => navigate(`/game/${game.id}`)}>
+        <div className={styles.popupContentWrapper} onClick={handlePopupClick}>
           <div className={styles.popupHeader}>
             <span className={styles.popupOrganizer}>{game.title || 'משחק'}</span>
             <span className={styles.popupLevel} style={{ backgroundColor: color }}>רמה {game.level}</span>
@@ -201,16 +208,16 @@ function GameMarker({ game, navigate }) {
         </Popup>
       </Marker>
     );
-  }
+  });
 
-function HomePage() {
+function HomePage({ pendingRequests: initialPendingRequests = [] }) {
   const [gamesList, setGamesList] = useState([]);
   const [loadingGames, setLoadingGames] = useState(true);
   const [userProfile, setUserProfile] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
-  const [pendingRequests, setPendingRequests] = useState([]);
+  const { toast, hideToast, showError } = useToast();
   const [weather, setWeather] = useState({
     temp: '--',
     description: '--',
@@ -234,7 +241,7 @@ function HomePage() {
               const organizerProfile = await getUserProfile(game.organizerId);
               return {
                 ...game,
-                organizer: organizerProfile?.name || 'מארגן'
+                organizer: organizerProfile?.nickname || organizerProfile?.name || 'מארגן'
               };
             } catch (err) {
               console.error(`Error fetching organizer for game ${game.id}:`, err);
@@ -256,24 +263,6 @@ function HomePage() {
 
     fetchGames();
   }, []);
-
-  useEffect(() => {
-    const fetchPendingRequests = async () => {
-      if (currentUser) {
-        try {
-          const requests = await getOrganizerPendingRequests(currentUser.uid);
-          setPendingRequests(requests);
-        } catch (err) {
-          console.error('Error fetching pending requests:', err);
-        }
-      }
-    };
-
-    fetchPendingRequests();
-    // Refresh requests every 30 seconds
-    const interval = setInterval(fetchPendingRequests, 30000);
-    return () => clearInterval(interval);
-  }, [currentUser]);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -347,25 +336,26 @@ function HomePage() {
     return () => clearInterval(interval);
   }, []);
 
-  const handleLogout = async () => {
+  const handleLogout = useCallback(async () => {
     try {
       const { logoutUser } = await import('../firebase/authService');
       await logoutUser();
       navigate('/login');
     } catch (err) {
       console.error('Logout error:', err);
+      showError('שגיאה בהתנתקות');
     }
-  };
+  }, [navigate, showError]);
 
-  const handleProfileClick = () => {
+  const handleProfileClick = useCallback(() => {
     if (!currentUser) {
       navigate('/login');
     } else {
       navigate('/profile');
     }
-  };
+  }, [currentUser, navigate]);
 
-  const handleCreateGame = () => {
+  const handleCreateGame = useCallback(() => {
     if (!currentUser) {
       navigate('/login');
       return;
@@ -373,65 +363,12 @@ function HomePage() {
     if (selectedLocation) {
       navigate(`/create-game?lat=${selectedLocation.lat}&lng=${selectedLocation.lng}`);
     }
-  };
+  }, [currentUser, selectedLocation, navigate]);
 
-  // Create GeoJSON from games
-  const geoJsonData = {
-    type: 'FeatureCollection',
-    features: gamesList.map((game) => ({
-      type: 'Feature',
-      geometry: {
-        type: 'Point',
-        coordinates: [game.coordinates?.lng || 34.7692, game.coordinates?.lat || 32.0853]
-      },
-      properties: {
-        id: game.id,
-        organizer: game.organizer,
-        date: game.date,
-        time: game.time,
-        level: game.level,
-        playersNeeded: game.playersNeeded,
-        currentPlayers: game.currentPlayers
-      }
-    }))
-  };
-
-  const onEachFeature = (feature, layer) => {
-    const props = feature.properties;
-    const popupContent = L.popup()
-      .setContent(`
-        <div style="cursor: pointer;">
-          <strong>משחק של ${props.organizer}</strong><br/>
-          תאריך: ${props.date}<br/>
-          שעה: ${props.time}<br/>
-          רמה: ${props.level}<br/>
-          שחקנים: ${props.currentPlayers}/${props.playersNeeded}
-          <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #ccc;">
-            <small style="color: #666;">לחץ כדי לראות פרטים</small>
-          </div>
-        </div>
-      `);
-    
-    layer.bindPopup(popupContent);
-    layer.on('click', () => {
-      layer.openPopup();
-    });
-    layer.on('popupopen', () => {
-      const popup = layer.getPopup();
-      const popupElement = popup.getElement();
-      if (popupElement) {
-        popupElement.style.cursor = 'pointer';
-        popupElement.addEventListener('click', () => {
-          navigate(`/game/${props.id}`);
-        });
-      }
-    });
-  };
-
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     setSelectedLocation(null);
     setShowDialog(false);
-  };
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -440,19 +377,19 @@ function HomePage() {
         <div className={styles.navButtons}>
           {currentUser ? (
             <>
-              {pendingRequests.length > 0 && (
+              {initialPendingRequests.length > 0 && (
                 <button 
                   className={styles.notificationBtn} 
                   onClick={() => navigate(`/notifications`)}
-                  title={`${pendingRequests.length} בקשות ממתינות`}
+                  title={`${initialPendingRequests.length} בקשות ממתינות`}
                 >
                   <span className={styles.notificationIcon}>🔔</span>
-                  <span className={styles.notificationBadge}>{pendingRequests.length}</span>
+                  <span className={styles.notificationBadge}>{initialPendingRequests.length}</span>
                 </button>
               )}
               <button className={styles.navBtn} title="פרופיל משתמש" onClick={handleProfileClick}>
                 <span className={styles.navIcon}>👤</span>
-                {userProfile?.name || currentUser.displayName || 'משתמש'} (רמה {userProfile?.level || 2})
+                {userProfile?.nickname || userProfile?.name || currentUser.displayName || 'משתמש'} (רמה {userProfile?.level || 2})
               </button>
               <button className={styles.navBtn} title="התנתקות" onClick={handleLogout}>
                 <span className={styles.navIcon}>🚪</span>
@@ -487,8 +424,14 @@ function HomePage() {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
+          <GeoJSONWithLabels data={geoJsonPolygons} />
           {!loadingGames && gamesList.length > 0 && gamesList.map((game) => (
-            <GameMarker key={game.id} game={game} navigate={navigate} />
+            <GameMarker 
+              key={game.id} 
+              game={game} 
+              navigate={navigate}
+              hasPendingRequests={initialPendingRequests.some(req => req.gameId === game.id)}
+            />
           ))}
           {selectedLocation && (
             <Marker 
@@ -541,6 +484,15 @@ function HomePage() {
           </div>
         </div>
       </div>
+
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={hideToast}
+          duration={toast.duration}
+        />
+      )}
     </div>
   );
 }
