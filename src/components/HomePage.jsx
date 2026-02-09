@@ -122,8 +122,8 @@ const GameMarker = memo(function GameMarker({ game, navigate, hasPendingRequests
     const dashArray = (progressPercentage / 100) * (2 * Math.PI * 20);
     
     const html = `
-      <div style="position: relative; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center;">
-        <svg style="position: absolute; width: 56px; height: 56px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));" viewBox="0 0 56 56">
+      <div style="position: relative; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+        <svg style="position: absolute; width: 56px; height: 56px;" viewBox="0 0 56 56">
           <!-- Background circle -->
           <circle cx="28" cy="28" r="24" fill="white" stroke="white" stroke-width="2"/>
           <!-- Progress ring background -->

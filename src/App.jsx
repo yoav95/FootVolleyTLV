@@ -75,9 +75,9 @@ function App() {
       }
     };
 
-    // Fetch immediately and then every 5 seconds
+    // Fetch immediately and then every 30 seconds
     fetchRequests();
-    const interval = setInterval(fetchRequests, 5000);
+    const interval = setInterval(fetchRequests, 30000);
     return () => clearInterval(interval);
   }, [currentUser]);
 

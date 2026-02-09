@@ -227,7 +227,7 @@ function GameForm({ location, onSuccess, onCancel }) {
         level: formData.level,
         notes: formData.notes,
         meetingPointText: formData.meetingPointText,
-        image: formData.image || null, // Compressed base64 image or null
+        image: formData.image || null,
         coordinates: location,
         players: [currentUser.uid],
         createdAt: new Date(),
